@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEMO — TOEFL Tense Mastery (Pratinjau)</title>
+<title>DEMO — TOEFL Tense Mastery (Pratinjau Terbatas)</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -1988,8 +1988,24 @@ window.startExercise=startExercise;window.exPick=exPick;window.exGoPage=exGoPage
 window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;window.exportCSV=exportCSV;
 window.startEdit=startEdit;window.cancelEdit=cancelEdit;window.saveEditStudent=saveEditStudent;
 window.toggleForgot=toggleForgot;window.submitForgot=submitForgot;window.markRequestDone=markRequestDone;
-/* ================= MODE DEMO (PRATINJAU, tanpa login, data contoh) ================= */
-function demoNo(){ alert('Ini hanya pratinjau. Fitur ini aktif di versi berbayar 🙂'); }
+/* ================= MODE DEMO (PRATINJAU TERBATAS, tanpa login) ================= */
+var DEMO_UNLOCKED=['t1','t2','t3']; /* modul gratis yang bisa dicoba penuh */
+var DEMO_PRODUCT='http://lynk.id/refkinurprasetyo/g25pvxr26j1w';
+function demoUnlocked(k){ return DEMO_UNLOCKED.indexOf(k)>=0; }
+function demoNo(){ alert('Ini pratinjau terbatas. Beli akses untuk membuka semua fitur 🙂'); }
+function demoLockName(k){ if(k==='advlevel')return 'Level Lanjutan'; return (typeof moduleName==='function')?moduleName(k):k; }
+function demoLockHTML(k){
+  var name=demoLockName(k);
+  return '<div class="hero" style="text-align:center;background:linear-gradient(135deg,rgba(255,209,102,.2),rgba(138,92,255,.12))">'
+    +'<h2>🔒 '+name+'</h2>'
+    +'<p style="margin:12px auto 4px;max-width:580px">Bagian ini termasuk <b>materi lengkap versi berbayar</b>. Di pratinjau, Anda bisa mencoba <b>gratis</b> modul <b>Present Simple, Present Continuous & Present Perfect</b> beserta latihannya.</p>'
+    +'<p style="margin:4px auto;max-width:580px;color:var(--muted)">Yang Anda dapat di versi lengkap: 12 tenses + 4 topik lanjutan, 160 soal latihan bertimer & berpembahasan, Simulasi TOEFL, Level Lanjutan (soal mahir), dan halaman Pencapaian.</p>'
+    +'<a href="'+DEMO_PRODUCT+'" target="_blank" style="display:inline-block;margin-top:14px;padding:13px 24px;border-radius:12px;background:linear-gradient(135deg,#4f7cff,#8a5cff);color:#fff;font-weight:800;text-decoration:none">🔓 Buka Akses Lengkap — mulai Rp25.000</a>'
+    +'</div>'
+    +'<div class="pager"><button class="btn" style="flex:1;padding:13px" onclick="go(\'home\')">← Kembali ke Beranda</button>'
+    +'<button class="btn primary" style="flex:1;padding:13px" onclick="go(\'t1\')">Coba modul gratis →</button></div>';
+}
+/* Sample data */
 function mkStudent(uid,name,lvl){
   var done={},scores={},exercises={},drills={};
   var exk=Object.keys(EXERCISES);
@@ -2008,17 +2024,17 @@ function mkStudent(uid,name,lvl){
 }
 var DEMO_STUDENTS=[mkStudent('d1','Anjany',0.95),mkStudent('d2','Adiva',0.88),mkStudent('d3','Windi',0.72),mkStudent('d4','Rifka',0.6),mkStudent('d5','Ileana',0.45),mkStudent('d6','Adzkia',0.8)];
 function demoStudentState(){
+  /* siswa demo hanya menyelesaikan 3 modul gratis */
   var done={},scores={},exercises={},drills={};
-  Object.keys(EXERCISES).forEach(function(k,i){
-    var p=72+((i*7)%24);
-    exercises[k]={correct:Math.round(p/10),total:10,pct:p}; done[k]=true;
-    scores[k]={correct:2,total:2}; drills[k]={correct:{0:true,1:true,2:true},total:3};
+  DEMO_UNLOCKED.forEach(function(k,i){
+    var p=[90,80,70][i];
+    done[k]=true; scores[k]={correct:2,total:2};
+    exercises[k]={correct:Math.round(p/10),total:10,pct:p};
+    drills[k]={correct:{0:true,1:true,2:true},total:3};
   });
-  scores.toefl={correct:13,total:15}; done.toefl=true;
-  exercises.adv1={correct:10,total:12,pct:83}; exercises.adv2={correct:9,total:12,pct:75};
   return {done:done,scores:scores,exercises:exercises,drills:drills};
 }
-/* Ganti fungsi yang menyentuh database asli dengan versi demo */
+/* Nonaktifkan fungsi yang menyentuh database asli */
 loadStudents=async function(){ STUDENTS=DEMO_STUDENTS.slice(); };
 loadAllAccounts=async function(){ ALL_ACCOUNTS=DEMO_STUDENTS.slice(); };
 loadRequests=async function(){ REQUESTS=[]; };
@@ -2028,6 +2044,24 @@ archiveAccount=async function(){ demoNo(); };
 extendAccount=async function(){ demoNo(); };
 saveEditStudent=async function(){ demoNo(); };
 markRequestDone=async function(){ demoNo(); };
+/* Kunci konten: bungkus renderer dengan pengecekan */
+var _rTense=renderTense; renderTense=function(t){ return demoUnlocked('t'+t.id)?_rTense(t):demoLockHTML('t'+t.id); };
+var _rAdv=renderAdvanced; renderAdvanced=function(a){ return demoUnlocked(a.id)?_rAdv(a):demoLockHTML(a.id); };
+var _rToefl=renderToefl; renderToefl=function(){ return demoLockHTML('toefl'); };
+var _rAdvLevel=renderAdvLevel; renderAdvLevel=function(){ return demoLockHTML('advlevel'); };
+var _startEx=startExercise; startExercise=function(key){ if(!demoUnlocked(key)){ go(key); return; } _startEx(key); };
+function markLockedNav(){
+  var nav=document.getElementById('nav'); if(!nav)return;
+  nav.querySelectorAll('button[data-go]').forEach(function(b){
+    var k=b.dataset.go;
+    var lockable=(/^t\d+$/.test(k))||(['a1','a2','a3','a4','toefl','advlevel'].indexOf(k)>=0);
+    if(lockable && !demoUnlocked(k)){
+      if(!b.querySelector('.lockic')){ var s=document.createElement('span'); s.className='lockic'; s.textContent='🔒'; s.style.marginLeft='auto'; s.style.fontSize='12px'; b.appendChild(s); }
+      b.style.opacity='.7';
+    }
+  });
+}
+var _render=render; render=function(){ _render(); try{ if(PROFILE&&PROFILE.role==='student') markLockedNav(); }catch(e){} };
 var demoRole='student';
 function demoSetRole(r){ demoRole=r; applyDemoRole(); }
 function applyDemoRole(){
@@ -2052,7 +2086,7 @@ function initDemo(){
   if(tb){
     tb.innerHTML='<button class="mob" onclick="document.getElementById(\'sidebar\').classList.toggle(\'open\')">☰</button>'
       +'<span class="uname" id="tbname">—</span><span class="rolechip" id="tbrole"></span><span class="sp"></span>'
-      +'<span style="font-size:12px;color:#ffd166;font-weight:800;margin-right:6px">🔎 PRATINJAU</span>'
+      +'<span style="font-size:12px;color:#ffd166;font-weight:800;margin-right:6px">🔎 PRATINJAU · 3 modul gratis</span>'
       +'<button class="demorole" data-r="student" onclick="demoSetRole(\'student\')" style="cursor:pointer;border:1px solid #2e3872;border-radius:8px;padding:6px 11px;background:#0b0f24;color:#fff;font-weight:700;margin:2px">👨‍🎓 Siswa</button>'
       +'<button class="demorole" data-r="teacher" onclick="demoSetRole(\'teacher\')" style="cursor:pointer;border:1px solid #2e3872;border-radius:8px;padding:6px 11px;background:#0b0f24;color:#fff;font-weight:700;margin:2px">🧑‍🏫 Guru</button>';
   }
