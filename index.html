@@ -1132,13 +1132,13 @@ function loginScreen(msg){
     <div class="err" id="li_err">${msg||''}</div>
     <div class="demo">
       <b>Akun</b> (klik untuk mengisi):
-      <div class="acc" onclick="fillLogin('refki@kelas.com','guru12345')"><span>👨‍🏫 Bapak Refki (Guru)</span><code>refki@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('anjany@kelas.com','siswa12345')"><span>👩‍🎓 Anjany</span><code>anjany@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('windi@kelas.com','siswa12345')"><span>👩‍🎓 Windi</span><code>windi@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('rifka@kelas.com','siswa12345')"><span>👩‍🎓 Rifka</span><code>rifka@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('adiva@kelas.com','siswa12345')"><span>👩‍🎓 Adiva</span><code>adiva@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('adzkia@kelas.com','siswa12345')"><span>👩‍🎓 Adzkia</span><code>adzkia@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('ileana@kelas.com','siswa12345')"><span>👩‍🎓 Ileana</span><code>ileana@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('refki@kelas.com','Refki123')"><span>👨‍🏫 Bapak Refki (Guru)</span><code>refki@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('anjany@kelas.com','Anjany123')"><span>👩‍🎓 Anjany</span><code>anjany@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('windi@kelas.com','Windi123')"><span>👩‍🎓 Windi</span><code>windi@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('rifka@kelas.com','Rifka123')"><span>👩‍🎓 Rifka</span><code>rifka@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('adiva@kelas.com','Adiva123')"><span>👩‍🎓 Adiva</span><code>adiva@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('adzkia@kelas.com','Adzkia123')"><span>👩‍🎓 Adzkia</span><code>adzkia@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('ileana@kelas.com','Ileana123')"><span>👩‍🎓 Ileana</span><code>ileana@kelas.com</code></div>
     </div>`;
 }
 function fillLogin(e,p){$("#li_email").value=e;$("#li_pw").value=p;}
@@ -1174,13 +1174,13 @@ async function onLogin(user){
 /* seeding akun contoh (dipanggil manual via console: seedDemo()) */
 async function seedDemo(){
   const accts=[
-    {email:'refki@kelas.com',pw:'guru12345',name:'Bapak Refki',role:'teacher'},
-    {email:'anjany@kelas.com',pw:'siswa12345',name:'Anjany',role:'student'},
-    {email:'windi@kelas.com',pw:'siswa12345',name:'Windi',role:'student'},
-    {email:'rifka@kelas.com',pw:'siswa12345',name:'Rifka',role:'student'},
-    {email:'adiva@kelas.com',pw:'siswa12345',name:'Adiva',role:'student'},
-    {email:'adzkia@kelas.com',pw:'siswa12345',name:'Adzkia',role:'student'},
-    {email:'ileana@kelas.com',pw:'siswa12345',name:'Ileana',role:'student'}
+    {email:'refki@kelas.com',pw:'Refki123',name:'Bapak Refki',role:'teacher'},
+    {email:'anjany@kelas.com',pw:'Anjany123',name:'Anjany',role:'student'},
+    {email:'windi@kelas.com',pw:'Windi123',name:'Windi',role:'student'},
+    {email:'rifka@kelas.com',pw:'Rifka123',name:'Rifka',role:'student'},
+    {email:'adiva@kelas.com',pw:'Adiva123',name:'Adiva',role:'student'},
+    {email:'adzkia@kelas.com',pw:'Adzkia123',name:'Adzkia',role:'student'},
+    {email:'ileana@kelas.com',pw:'Ileana123',name:'Ileana',role:'student'}
   ];
   const sec=firebase.initializeApp(firebaseConfig,'seed'+Date.now());
   let made=0,exist=0;
