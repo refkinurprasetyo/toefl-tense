@@ -1521,7 +1521,7 @@ function drawAchievementCharts(){
 function renderTeacherNav(){
   let html=`<ul class="navlist">
     <li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard</button></li>
-    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun</button></li>
+    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun${newReqCount()?' <span class="badgePill expired" style="font-size:9px;padding:1px 6px;margin-left:4px">'+newReqCount()+'</span>':''}</button></li>
   </ul>`;
   html+=`<div class="navgroup">Siswa (${STUDENTS.length})</div><ul class="navlist">`;
   STUDENTS.forEach(s=>{html+=`<li><button class="${state.current==='stu:'+s.uid?'active':''}" data-go="stu:${s.uid}"><span class="num">👤</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name||s.email}</span></button></li>`;});
@@ -1619,7 +1619,7 @@ function renderStudentDetail(uid){
 
 /* ============ PANEL OWNER (ADMIN) ============ */
 const ACCESS_DAYS=30;
-let ALL_ACCOUNTS=[], lastCred=null, editingUid=null;
+let ALL_ACCOUNTS=[], lastCred=null, editingUid=null, REQUESTS=[];
 async function loadAllAccounts(){
   ALL_ACCOUNTS=[];
   try{
@@ -1627,6 +1627,22 @@ async function loadAllAccounts(){
     snap.forEach(d=>ALL_ACCOUNTS.push(Object.assign({uid:d.id},d.data())));
     ALL_ACCOUNTS.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   }catch(e){console.warn("loadAllAccounts",e);}
+}
+async function loadRequests(){
+  REQUESTS=[];
+  try{
+    const snap=await db.collection("resetRequests").get();
+    snap.forEach(d=>REQUESTS.push(Object.assign({id:d.id},d.data())));
+    REQUESTS.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  }catch(e){console.warn("loadRequests",e);}
+}
+function newReqCount(){ return REQUESTS.filter(r=>r.status==='baru').length; }
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function reqWa(r){ const wa=(r.contact||'').replace(/[^0-9]/g,''); if(!wa)return ''; const num=wa.startsWith('0')?'62'+wa.slice(1):wa; return 'https://wa.me/'+num+'?text='+encodeURIComponent('Halo, ini admin TOEFL Tense Mastery. Kami menerima permintaan reset password Anda. Berikut info login baru Anda: '); }
+async function markRequestDone(id){
+  try{ await db.collection("resetRequests").doc(id).set({status:'selesai'},{merge:true});
+    await loadRequests();renderNav();$("#main").innerHTML=renderAdmin();
+  }catch(e){alert('Gagal: '+e.message);}
 }
 function slugName(n){return (n||'').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g,'').slice(0,20)||'siswa';}
 function genPassword(){
@@ -1751,7 +1767,7 @@ function daysLeft(a){ if(!a.expiresAt)return '∞'; const d=Math.ceil((a.expires
 function fmtDate(t){ return t?new Date(t).toLocaleDateString('id-ID'):'-'; }
 function renderAdminNav(){
   let html=`<ul class="navlist">
-    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun</button></li>
+    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun${newReqCount()?' <span class="badgePill expired" style="font-size:9px;padding:1px 6px;margin-left:4px">'+newReqCount()+'</span>':''}</button></li>
     <li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard Kelas</button></li>
   </ul>`;
   html+=`<div class="navgroup">Siswa (${STUDENTS.length})</div><ul class="navlist">`;
@@ -1764,7 +1780,7 @@ function renderAdminNav(){
 async function renderAdminPage(){
   const m=$("#main");lastCred=null;editingUid=null;
   m.innerHTML=`<div class="kicker">PANEL OWNER</div><h2 class="title">🛠️ Kelola Akun Kelas</h2><p class="subtitle">Memuat data akun…</p>`;
-  await loadAllAccounts();await loadStudents();renderNav();
+  await loadAllAccounts();await loadStudents();await loadRequests();renderNav();
   m.innerHTML=renderAdmin();
 }
 function renderAdmin(){
@@ -1807,6 +1823,17 @@ function renderAdmin(){
     <div class="stat"><div class="big">${students.length-activeCount}</div><div class="lab">kadaluarsa/arsip</div></div>
     <div class="stat"><div class="big">${staff.length}</div><div class="lab">akun guru/owner</div></div>
   </div>
+  ${REQUESTS.length?`<div class="section-title"><span class="ic">🔔</span> Permintaan Lupa Password ${newReqCount()?'<span class="badgePill expired" style="margin-left:6px">'+newReqCount()+' baru</span>':''}</div>
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Waktu</th><th>Akun/Email</th><th>Kontak</th><th>Pesan</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+  ${REQUESTS.map(r=>`<tr>
+    <td>${r.createdAt?new Date(r.createdAt).toLocaleString('id-ID'):'-'}</td>
+    <td>${escHtml(r.account)||'—'}</td>
+    <td>${escHtml(r.contact)||'—'}</td>
+    <td>${r.message?escHtml(r.message):'<span style="color:var(--muted)">—</span>'}</td>
+    <td><span class="badgePill ${r.status==='baru'?'expired':'archived'}">${r.status==='baru'?'baru':'selesai'}</span></td>
+    <td>${reqWa(r)?`<a class="miniact" href="${reqWa(r)}" target="_blank">💬 Balas WA</a>`:''}${r.status==='baru'?`<button class="miniact" onclick="markRequestDone('${r.id}')" style="color:var(--good)">✓ Selesai</button>`:''}</td>
+  </tr>`).join('')}
+  </tbody></table></div>`:''}
   <div class="admbox">
     <h3>➕ Buat Akun Siswa Baru</h3>
     <div class="admform">
@@ -1858,17 +1885,30 @@ function loginScreen(msg){
     <button class="bigbtn" onclick="doLogin()">Masuk</button>
     <div class="err" id="li_err">${msg||''}</div>
     <div class="demo">
-      <b>Akun</b> (klik untuk mengisi):
-      <div class="acc" onclick="fillLogin('refki@kelas.com','Refki123')"><span>👨‍🏫 Bapak Refki (Guru)</span><code>refki@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('anjany@kelas.com','Anjany123')"><span>👩‍🎓 Anjany</span><code>anjany@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('windi@kelas.com','Windi123')"><span>👩‍🎓 Windi</span><code>windi@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('rifka@kelas.com','Rifka123')"><span>👩‍🎓 Rifka</span><code>rifka@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('adiva@kelas.com','Adiva123')"><span>👩‍🎓 Adiva</span><code>adiva@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('adzkia@kelas.com','Adzkia123')"><span>👩‍🎓 Adzkia</span><code>adzkia@kelas.com</code></div>
-      <div class="acc" onclick="fillLogin('ileana@kelas.com','Ileana123')"><span>👩‍🎓 Ileana</span><code>ileana@kelas.com</code></div>
+      <button type="button" onclick="toggleForgot()" style="background:transparent;border:none;color:var(--accent);cursor:pointer;font-size:14px;font-weight:600;padding:0">🔑 Lupa password?</button>
+      <div id="forgotbox" style="display:none;margin-top:10px">
+        <p class="sub" style="margin:0 0 6px">Isi data Anda — permintaan akan dikirim ke admin, lalu Anda dihubungi lewat kontak yang diisi.</p>
+        <label>Email / nama akun Anda</label><input id="fp_account" placeholder="mis. anjany@kelas.com atau nama">
+        <label>WhatsApp / email untuk dihubungi</label><input id="fp_contact" placeholder="0812xxxxxxx atau email@...">
+        <label>Pesan (opsional)</label><input id="fp_msg" placeholder="mis. lupa password, mohon direset">
+        <button class="bigbtn" style="margin-top:14px" onclick="submitForgot()">Kirim ke Admin</button>
+        <div class="err" id="fp_result"></div>
+      </div>
     </div>`;
 }
 function fillLogin(e,p){$("#li_email").value=e;$("#li_pw").value=p;}
+function toggleForgot(){ const b=$("#forgotbox"); if(b)b.style.display=(b.style.display==='none'?'block':'none'); }
+async function submitForgot(){
+  const account=($("#fp_account").value||'').trim(), contact=($("#fp_contact").value||'').trim(), message=($("#fp_msg").value||'').trim();
+  const r=$("#fp_result");
+  if(!account && !contact){ r.style.color='var(--bad)'; r.textContent='Isi email/nama atau kontak Anda dulu.'; return; }
+  r.style.color='var(--muted)'; r.textContent='Mengirim…';
+  try{
+    await db.collection('resetRequests').add({account:account.slice(0,120),contact:contact.slice(0,120),message:message.slice(0,500),createdAt:Date.now(),status:'baru'});
+    r.style.color='var(--good)'; r.textContent='✅ Permintaan terkirim ke admin. Anda akan dihubungi lewat kontak yang diisi.';
+    $("#fp_account").value='';$("#fp_contact").value='';$("#fp_msg").value='';
+  }catch(e){ r.style.color='var(--bad)'; r.textContent='Gagal mengirim: '+(e.code||e.message); }
+}
 function doLogin(){
   const e=$("#li_email").value.trim(),p=$("#li_pw").value;
   if(!e||!p){$("#li_err").textContent="Isi email dan password.";return;}
@@ -1896,8 +1936,8 @@ async function onLogin(user){
     return;
   }
   PROFILE={name,email:user.email,role,expiresAt};
-  if(role==='admin'){await loadAllAccounts();await loadStudents();}
-  else if(role==='teacher'){await loadStudents();}
+  if(role==='admin'){await loadAllAccounts();await loadStudents();await loadRequests();}
+  else if(role==='teacher'){await loadStudents();await loadRequests();}
   document.body.classList.remove('pre-auth');
   $("#tbname").textContent=name;
   const rl=role==='admin'?'Owner':(role==='teacher'?'Guru':'Siswa');
@@ -1947,6 +1987,7 @@ window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleI
 window.startExercise=startExercise;window.exPick=exPick;window.exGoPage=exGoPage;window.exSubmit=exSubmit;
 window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;window.exportCSV=exportCSV;
 window.startEdit=startEdit;window.cancelEdit=cancelEdit;window.saveEditStudent=saveEditStudent;
+window.toggleForgot=toggleForgot;window.submitForgot=submitForgot;window.markRequestDone=markRequestDone;
 initApp();
 </script>
 </body>
