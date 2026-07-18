@@ -232,6 +232,27 @@ body.pre-auth #authgate{display:flex}
 .exrev .ans{font-size:13px;margin-top:3px}
 .exrev .ans b.good{color:var(--good)}
 .exrev .ans b.bad{color:#ffb4b4}
+/* ===== PANEL OWNER (ADMIN) ===== */
+.rolechip.admin{background:rgba(255,209,102,.16);color:var(--gold)}
+.admbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.admbox h3{font-size:15px;margin-bottom:12px}
+.admform{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.admform label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.admform input{width:100%;background:#0c1130;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:9px;font-size:14px}
+.admform input:focus{outline:none;border-color:var(--accent)}
+.admform .btn{white-space:nowrap}
+.credbox{background:linear-gradient(90deg,rgba(46,230,166,.12),transparent);border:1px solid var(--good);border-radius:12px;padding:14px 16px;margin-top:14px}
+.credbox .row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:14px;flex-wrap:wrap}
+.credbox code{background:#0c1130;border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--teal);font-size:14px}
+.credbox .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dtable code{background:#0c1130;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--teal);font-size:12.5px}
+.badgePill{font-size:11px;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.badgePill.active{background:rgba(46,230,166,.16);color:var(--good)}
+.badgePill.expired{background:rgba(255,107,107,.16);color:var(--bad)}
+.badgePill.archived{background:var(--card2);color:var(--muted)}
+.miniact{background:var(--card2);border:1px solid var(--line);color:var(--text);padding:4px 9px;border-radius:7px;font-size:11.5px;cursor:pointer;margin:2px}
+.miniact:hover{border-color:var(--accent)}
+@media(max-width:700px){.admform{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="pre-auth">
@@ -1004,6 +1025,7 @@ function save(){
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
 
 function renderNav(){
+  if(PROFILE&&PROFILE.role==='admin'){ renderAdminNav(); return; }
   if(PROFILE&&PROFILE.role==='teacher'){ renderTeacherNav(); return; }
   let html=`<ul class="navlist">
     <li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">🏠</span> Beranda & Peta</button></li>
@@ -1395,7 +1417,8 @@ function render(){
   renderNav();
   const m=$("#main");
   if(state.current.startsWith('ex:')){renderExercise(state.current.slice(3));return;}
-  if(PROFILE&&PROFILE.role==='teacher'){
+  if(PROFILE&&(PROFILE.role==='teacher'||PROFILE.role==='admin')){
+    if(PROFILE.role==='admin'&&state.current==='admin'){renderAdminPage();return;}
     if(state.current==='teacher'){renderTeacher();return;}
     if(state.current.startsWith('stu:')){renderStudentDetail(state.current.slice(4));return;}
   }
@@ -1591,6 +1614,160 @@ function renderStudentDetail(uid){
   }
 }
 
+/* ============ PANEL OWNER (ADMIN) ============ */
+const ACCESS_DAYS=30;
+let ALL_ACCOUNTS=[], lastCred=null;
+async function loadAllAccounts(){
+  ALL_ACCOUNTS=[];
+  try{
+    const snap=await db.collection("users").get();
+    snap.forEach(d=>ALL_ACCOUNTS.push(Object.assign({uid:d.id},d.data())));
+    ALL_ACCOUNTS.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  }catch(e){console.warn("loadAllAccounts",e);}
+}
+function slugName(n){return (n||'').toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g,'').slice(0,20)||'siswa';}
+function genPassword(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz';let p='';
+  for(let i=0;i<9;i++)p+=c[Math.floor(Math.random()*c.length)];return p;
+}
+function uniquePassword(){
+  let p,t=0;do{p=genPassword();t++;}while(ALL_ACCOUNTS.some(a=>a.pw===p)&&t<80);return p;
+}
+async function createStudentAccount(name,contact){
+  const slug=slugName(name), pw=uniquePassword();
+  const sec=firebase.initializeApp(firebaseConfig,'adm'+Date.now());
+  try{
+    let email='',cred=null;
+    for(let suffix=123;suffix<400;suffix++){
+      email=slug+suffix+'@kelas.com';
+      try{ cred=await sec.auth().createUserWithEmailAndPassword(email,pw); break; }
+      catch(e){ if(e.code==='auth/email-already-in-use') continue; else throw e; }
+    }
+    if(!cred) throw new Error('Tidak bisa membuat email unik');
+    const now=Date.now(), expiresAt=now+ACCESS_DAYS*86400000;
+    const doc={name:name,email:email,role:'student',pw:pw,contact:contact||'',createdAt:now,expiresAt:expiresAt,status:'active',done:{},scores:{},drills:{},exercises:{}};
+    await sec.firestore().collection("users").doc(cred.user.uid).set(doc,{merge:true});
+    await sec.auth().signOut();
+    return {ok:true,uid:cred.user.uid,name,email,pw,contact:contact||'',expiresAt};
+  }catch(e){ return {ok:false,error:e.message}; }
+  finally{ try{await sec.delete();}catch(e){} }
+}
+function buildMsg(a){
+  const url=location.origin+location.pathname;
+  const exp=a.expiresAt?new Date(a.expiresAt).toLocaleDateString('id-ID'):'-';
+  return `Halo ${a.name}! Akses kelas TOEFL Tense Mastery kamu sudah aktif selama ${ACCESS_DAYS} hari (berlaku sampai ${exp}).\n\nLogin di: ${url}\nEmail: ${a.email}\nPassword: ${a.pw}\n\n(Password tidak bisa diubah, mohon simpan baik-baik dan jangan dibagikan ya.)`;
+}
+function waFor(a){
+  const wa=(a.contact||'').replace(/[^0-9]/g,'');if(!wa)return '';
+  const num=wa.startsWith('0')?'62'+wa.slice(1):wa;
+  return 'https://wa.me/'+num+'?text='+encodeURIComponent(buildMsg(a));
+}
+function copyMsg(uid){
+  const a=ALL_ACCOUNTS.find(x=>x.uid===uid)||(lastCred&&lastCred.uid===uid?lastCred:null);if(!a)return;
+  navigator.clipboard.writeText(buildMsg(a)).then(()=>alert('Info login disalin ke clipboard.')).catch(()=>alert('Gagal menyalin.'));
+}
+async function adminCreate(){
+  const name=($("#ad_name").value||'').trim(), contact=($("#ad_contact").value||'').trim();
+  const res=$("#ad_result");
+  if(!name){res.innerHTML='<div class="trap">Isi nama siswa dulu.</div>';return;}
+  res.innerHTML='<div class="tip">Membuat akun & kredensial…</div>';
+  const r=await createStudentAccount(name,contact);
+  if(!r.ok){res.innerHTML='<div class="trap">Gagal membuat akun: '+r.error+'</div>';return;}
+  lastCred=r;
+  await loadAllAccounts();await loadStudents();
+  renderNav();$("#main").innerHTML=renderAdmin();scrollTo(0,0);
+}
+async function archiveAccount(uid){
+  if(!confirm('Arsipkan & nonaktifkan akun ini sekarang? Siswa tidak akan bisa login lagi.'))return;
+  try{ await db.collection("users").doc(uid).set({status:'archived',expiresAt:Date.now()},{merge:true});
+    await loadAllAccounts();await loadStudents();renderNav();$("#main").innerHTML=renderAdmin();
+  }catch(e){alert('Gagal: '+e.message);}
+}
+async function extendAccount(uid){
+  const now=Date.now(), a=ALL_ACCOUNTS.find(x=>x.uid===uid);
+  const base=(a&&a.expiresAt&&a.expiresAt>now)?a.expiresAt:now;
+  try{ await db.collection("users").doc(uid).set({expiresAt:base+ACCESS_DAYS*86400000,status:'active'},{merge:true});
+    await loadAllAccounts();await loadStudents();renderNav();$("#main").innerHTML=renderAdmin();
+  }catch(e){alert('Gagal: '+e.message);}
+}
+function acctStatus(a){ if(a.status==='archived')return 'archived'; if(a.expiresAt&&Date.now()>a.expiresAt)return 'expired'; return 'active'; }
+function daysLeft(a){ if(!a.expiresAt)return '∞'; const d=Math.ceil((a.expiresAt-Date.now())/86400000); return d>0?d+' hari':'habis'; }
+function fmtDate(t){ return t?new Date(t).toLocaleDateString('id-ID'):'-'; }
+function renderAdminNav(){
+  let html=`<ul class="navlist">
+    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun</button></li>
+    <li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard Kelas</button></li>
+  </ul>`;
+  html+=`<div class="navgroup">Siswa (${STUDENTS.length})</div><ul class="navlist">`;
+  STUDENTS.forEach(s=>{html+=`<li><button class="${state.current==='stu:'+s.uid?'active':''}" data-go="stu:${s.uid}"><span class="num">👤</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name||s.email}</span></button></li>`;});
+  html+=`</ul><div class="navgroup">Materi</div><ul class="navlist"><li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">📚</span> Lihat Materi</button></li></ul>`;
+  $("#nav").innerHTML=html;
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.current=b.dataset.go;document.getElementById('sidebar').classList.remove('open');render();scrollTo(0,0);});
+  $("#progtext").textContent=`${STUDENTS.length} siswa • Owner`;$("#progfill").style.width='100%';
+}
+async function renderAdminPage(){
+  const m=$("#main");lastCred=null;
+  m.innerHTML=`<div class="kicker">PANEL OWNER</div><h2 class="title">🛠️ Kelola Akun Kelas</h2><p class="subtitle">Memuat data akun…</p>`;
+  await loadAllAccounts();await loadStudents();renderAdminNav();
+  m.innerHTML=renderAdmin();
+}
+function renderAdmin(){
+  const students=ALL_ACCOUNTS.filter(a=>a.role==='student');
+  const staff=ALL_ACCOUNTS.filter(a=>a.role==='teacher'||a.role==='admin');
+  const activeCount=students.filter(a=>acctStatus(a)==='active').length;
+  const credHTML=lastCred?`<div class="credbox">
+    <b style="color:var(--good)">✅ Akun baru dibuat untuk ${lastCred.name}</b>
+    <div class="row"><span>Email (login)</span><code>${lastCred.email}</code></div>
+    <div class="row"><span>Password</span><code>${lastCred.pw}</code></div>
+    <div class="row"><span>Berlaku sampai</span><code>${fmtDate(lastCred.expiresAt)} (${ACCESS_DAYS} hari)</code></div>
+    <div class="acts">
+      <button class="btn" onclick="copyMsg('${lastCred.uid}')">📋 Salin info login</button>
+      ${waFor(lastCred)?`<a class="btn primary" href="${waFor(lastCred)}" target="_blank">💬 Kirim via WhatsApp</a>`:'<span style="color:var(--muted);font-size:12px;align-self:center">(isi WhatsApp untuk tombol kirim)</span>'}
+    </div></div>`:'';
+  return `<div class="kicker">PANEL OWNER</div>
+  <h2 class="title">🛠️ Kelola Akun Kelas</h2>
+  <p class="subtitle">Buat akun siswa tiap ada pembelian di Lynk. Email = nama+angka unik, password acak & tetap (tak bisa diubah siswa), akses ${ACCESS_DAYS} hari lalu otomatis berakhir.</p>
+  <div class="statgrid">
+    <div class="stat"><div class="big">${students.length}</div><div class="lab">total akun siswa</div></div>
+    <div class="stat"><div class="big" style="color:var(--good)">${activeCount}</div><div class="lab">siswa aktif</div></div>
+    <div class="stat"><div class="big">${students.length-activeCount}</div><div class="lab">kadaluarsa/arsip</div></div>
+    <div class="stat"><div class="big">${staff.length}</div><div class="lab">akun guru/owner</div></div>
+  </div>
+  <div class="admbox">
+    <h3>➕ Buat Akun Siswa Baru</h3>
+    <div class="admform">
+      <div><label>Nama siswa</label><input id="ad_name" placeholder="mis. Rangga Saputra"></div>
+      <div><label>WhatsApp / Email siswa</label><input id="ad_contact" placeholder="0812xxxxxxx atau email@..."></div>
+      <button class="btn primary" onclick="adminCreate()">Buat Akun</button>
+    </div>
+    <div id="ad_result">${credHTML}</div>
+  </div>
+  <div class="section-title"><span class="ic">👥</span> Daftar Siswa (${students.length})</div>
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email (login)</th><th>Password</th><th>Kontak</th><th>Dibuat</th><th>Berakhir</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+  ${students.length?students.map(a=>{const st=acctStatus(a);return `<tr>
+    <td><b>${a.name||'-'}</b></td>
+    <td><code>${a.email||'-'}</code></td>
+    <td>${a.pw?'<code>'+a.pw+'</code>':'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${a.contact||'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${fmtDate(a.createdAt)}</td>
+    <td>${fmtDate(a.expiresAt)}</td>
+    <td>${daysLeft(a)}</td>
+    <td><span class="badgePill ${st}">${st==='active'?'aktif':(st==='expired'?'kadaluarsa':'arsip')}</span></td>
+    <td>
+      <button class="miniact" onclick="copyMsg('${a.uid}')">📋 Salin</button>
+      ${waFor(a)?`<a class="miniact" href="${waFor(a)}" target="_blank">💬 WA</a>`:''}
+      <button class="miniact" onclick="extendAccount('${a.uid}')">+${ACCESS_DAYS}h</button>
+      ${st!=='archived'?`<button class="miniact" onclick="archiveAccount('${a.uid}')" style="color:var(--bad)">🗄️ Arsip</button>`:''}
+    </td>
+  </tr>`;}).join(''):'<tr><td colspan="9" style="color:var(--muted);padding:20px;text-align:center">Belum ada akun siswa. Buat lewat form di atas.</td></tr>'}
+  </tbody></table></div>
+  <div class="section-title"><span class="ic">🧑‍🏫</span> Akun Guru & Owner (${staff.length})</div>
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Dibuat</th></tr></thead><tbody>
+  ${staff.map(a=>`<tr><td><b>${a.name||'-'}</b></td><td><code>${a.email||'-'}</code></td><td><span class="badgePill active">${a.role==='admin'?'Owner':'Guru'}</span></td><td>${fmtDate(a.createdAt)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div style="margin-top:14px"><button class="btn" onclick="render()">🔄 Muat ulang</button></div>`;
+}
+
 /* ============ AUTH ============ */
 function loginScreen(msg){
   document.body.classList.add('pre-auth');
@@ -1627,20 +1804,27 @@ function doLogout(){if(auth)auth.signOut().then(()=>location.reload());}
 async function onLogin(user){
   CU=user;
   try{const s=localStorage.getItem(cacheKey());if(s){const c=JSON.parse(s);state.done=c.done||{};state.scores=c.scores||{};state.drills=c.drills||{};state.exercises=c.exercises||{};}}catch(e){}
-  let role='student',name=user.email;
+  let role='student',name=user.email,expiresAt=null;
   try{
     const doc=await db.collection("users").doc(user.uid).get();
-    if(doc.exists){const d=doc.data();role=d.role||'student';name=d.name||user.email;
+    if(doc.exists){const d=doc.data();role=d.role||'student';name=d.name||user.email;expiresAt=d.expiresAt||null;
       state.done=d.done||state.done;state.scores=d.scores||state.scores;state.drills=d.drills||state.drills;state.exercises=d.exercises||state.exercises;}
     else{await db.collection("users").doc(user.uid).set({name:user.email,email:user.email,role:'student',createdAt:Date.now()},{merge:true});}
   }catch(e){console.warn("profil",e);}
-  PROFILE={name,email:user.email,role};
-  if(role==='teacher')await loadStudents();
+  if(role==='student' && expiresAt && Date.now()>expiresAt){
+    try{await auth.signOut();}catch(e){}
+    CU=null;PROFILE=null;
+    loginScreen('⛔ Akses Anda sudah berakhir (masa aktif 1 bulan habis). Silakan hubungi admin untuk memperpanjang.');
+    return;
+  }
+  PROFILE={name,email:user.email,role,expiresAt};
+  if(role==='admin'){await loadAllAccounts();await loadStudents();}
+  else if(role==='teacher'){await loadStudents();}
   document.body.classList.remove('pre-auth');
   $("#tbname").textContent=name;
-  $("#tbrole").textContent=role==='teacher'?'Guru':'Siswa';
-  $("#tbrole").className="rolechip "+(role==='teacher'?'teacher':'student');
-  state.current=role==='teacher'?'teacher':'home';
+  const rl=role==='admin'?'Owner':(role==='teacher'?'Guru':'Siswa');
+  $("#tbrole").textContent=rl;$("#tbrole").className="rolechip "+role;
+  state.current=role==='admin'?'admin':(role==='teacher'?'teacher':'home');
   render();
 }
 /* seeding akun contoh (dipanggil manual via console: seedDemo()) */
@@ -1683,6 +1867,7 @@ function initApp(){
 }
 window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;window.doLogin=doLogin;window.doLogout=doLogout;window.fillLogin=fillLogin;
 window.startExercise=startExercise;window.exPick=exPick;window.exGoPage=exGoPage;window.exSubmit=exSubmit;
+window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;
 initApp();
 </script>
 </body>
