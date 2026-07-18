@@ -1131,11 +1131,14 @@ function loginScreen(msg){
     <button class="bigbtn" onclick="doLogin()">Masuk</button>
     <div class="err" id="li_err">${msg||''}</div>
     <div class="demo">
-      <b>Akun contoh</b> (klik untuk mengisi):
-      <div class="acc" onclick="fillLogin('guru@demo.com','guru12345')"><span>👩‍🏫 Guru</span><code>guru@demo.com</code></div>
-      <div class="acc" onclick="fillLogin('siswa1@demo.com','siswa12345')"><span>👨‍🎓 Siswa 1</span><code>siswa1@demo.com</code></div>
-      <div class="acc" onclick="fillLogin('siswa2@demo.com','siswa12345')"><span>👩‍🎓 Siswa 2</span><code>siswa2@demo.com</code></div>
-      <div class="acc" onclick="fillLogin('siswa3@demo.com','siswa12345')"><span>🧑‍🎓 Siswa 3</span><code>siswa3@demo.com</code></div>
+      <b>Akun</b> (klik untuk mengisi):
+      <div class="acc" onclick="fillLogin('refki@kelas.com','guru12345')"><span>👨‍🏫 Bapak Refki (Guru)</span><code>refki@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('anjany@kelas.com','siswa12345')"><span>👩‍🎓 Anjany</span><code>anjany@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('windi@kelas.com','siswa12345')"><span>👩‍🎓 Windi</span><code>windi@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('rifka@kelas.com','siswa12345')"><span>👩‍🎓 Rifka</span><code>rifka@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('adiva@kelas.com','siswa12345')"><span>👩‍🎓 Adiva</span><code>adiva@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('adzkia@kelas.com','siswa12345')"><span>👩‍🎓 Adzkia</span><code>adzkia@kelas.com</code></div>
+      <div class="acc" onclick="fillLogin('ileana@kelas.com','siswa12345')"><span>👩‍🎓 Ileana</span><code>ileana@kelas.com</code></div>
     </div>`;
 }
 function fillLogin(e,p){$("#li_email").value=e;$("#li_pw").value=p;}
@@ -1171,10 +1174,13 @@ async function onLogin(user){
 /* seeding akun contoh (dipanggil manual via console: seedDemo()) */
 async function seedDemo(){
   const accts=[
-    {email:'guru@demo.com',pw:'guru12345',name:'Bu Sartika (Guru)',role:'teacher'},
-    {email:'siswa1@demo.com',pw:'siswa12345',name:'Andi Pratama',role:'student'},
-    {email:'siswa2@demo.com',pw:'siswa12345',name:'Bina Lestari',role:'student'},
-    {email:'siswa3@demo.com',pw:'siswa12345',name:'Citra Dewi',role:'student'}
+    {email:'refki@kelas.com',pw:'guru12345',name:'Bapak Refki',role:'teacher'},
+    {email:'anjany@kelas.com',pw:'siswa12345',name:'Anjany',role:'student'},
+    {email:'windi@kelas.com',pw:'siswa12345',name:'Windi',role:'student'},
+    {email:'rifka@kelas.com',pw:'siswa12345',name:'Rifka',role:'student'},
+    {email:'adiva@kelas.com',pw:'siswa12345',name:'Adiva',role:'student'},
+    {email:'adzkia@kelas.com',pw:'siswa12345',name:'Adzkia',role:'student'},
+    {email:'ileana@kelas.com',pw:'siswa12345',name:'Ileana',role:'student'}
   ];
   const sec=firebase.initializeApp(firebaseConfig,'seed'+Date.now());
   let made=0,exist=0;
