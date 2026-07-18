@@ -236,7 +236,7 @@ body.pre-auth #authgate{display:flex}
 .rolechip.admin{background:rgba(255,209,102,.16);color:var(--gold)}
 .admbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
 .admbox h3{font-size:15px;margin-bottom:12px}
-.admform{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.admform{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end}
 .admform label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
 .admform input{width:100%;background:#0c1130;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:9px;font-size:14px}
 .admform input:focus{outline:none;border-color:var(--accent)}
@@ -1633,7 +1633,7 @@ function genPassword(){
 function uniquePassword(){
   let p,t=0;do{p=genPassword();t++;}while(ALL_ACCOUNTS.some(a=>a.pw===p)&&t<80);return p;
 }
-async function createStudentAccount(name,contact){
+async function createStudentAccount(name,contact,note){
   const slug=slugName(name), pw=uniquePassword();
   const sec=firebase.initializeApp(firebaseConfig,'adm'+Date.now());
   try{
@@ -1645,10 +1645,10 @@ async function createStudentAccount(name,contact){
     }
     if(!cred) throw new Error('Tidak bisa membuat email unik');
     const now=Date.now(), expiresAt=now+ACCESS_DAYS*86400000;
-    const doc={name:name,email:email,role:'student',pw:pw,contact:contact||'',createdAt:now,expiresAt:expiresAt,status:'active',done:{},scores:{},drills:{},exercises:{}};
+    const doc={name:name,email:email,role:'student',pw:pw,contact:contact||'',note:note||'',createdAt:now,expiresAt:expiresAt,status:'active',done:{},scores:{},drills:{},exercises:{}};
     await sec.firestore().collection("users").doc(cred.user.uid).set(doc,{merge:true});
     await sec.auth().signOut();
-    return {ok:true,uid:cred.user.uid,name,email,pw,contact:contact||'',expiresAt};
+    return {ok:true,uid:cred.user.uid,name,email,pw,contact:contact||'',note:note||'',expiresAt};
   }catch(e){ return {ok:false,error:e.message}; }
   finally{ try{await sec.delete();}catch(e){} }
 }
@@ -1667,11 +1667,11 @@ function copyMsg(uid){
   navigator.clipboard.writeText(buildMsg(a)).then(()=>alert('Info login disalin ke clipboard.')).catch(()=>alert('Gagal menyalin.'));
 }
 async function adminCreate(){
-  const name=($("#ad_name").value||'').trim(), contact=($("#ad_contact").value||'').trim();
+  const name=($("#ad_name").value||'').trim(), contact=($("#ad_contact").value||'').trim(), note=($("#ad_note").value||'').trim();
   const res=$("#ad_result");
   if(!name){res.innerHTML='<div class="trap">Isi nama siswa dulu.</div>';return;}
   res.innerHTML='<div class="tip">Membuat akun & kredensial…</div>';
-  const r=await createStudentAccount(name,contact);
+  const r=await createStudentAccount(name,contact,note);
   if(!r.ok){res.innerHTML='<div class="trap">Gagal membuat akun: '+r.error+'</div>';return;}
   lastCred=r;
   await loadAllAccounts();await loadStudents();
@@ -1691,6 +1691,22 @@ async function extendAccount(uid){
   }catch(e){alert('Gagal: '+e.message);}
 }
 function acctStatus(a){ if(a.status==='archived')return 'archived'; if(a.expiresAt&&Date.now()>a.expiresAt)return 'expired'; return 'active'; }
+function exportCSV(){
+  const rows=ALL_ACCOUNTS.filter(a=>a.role==='student');
+  if(!rows.length){alert('Belum ada akun siswa untuk diekspor.');return;}
+  const stLabel={active:'aktif',expired:'kadaluarsa',archived:'arsip'};
+  const head=['Nama','Email (login)','Password','Kontak','Catatan/Paket','Dibuat','Berakhir','Sisa','Status'];
+  const esc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const lines=[head.map(esc).join(',')];
+  rows.forEach(a=>{lines.push([a.name||'',a.email||'',a.pw||'',a.contact||'',a.note||'',fmtDate(a.createdAt),fmtDate(a.expiresAt),daysLeft(a),stLabel[acctStatus(a)]].map(esc).join(','));});
+  const csv='﻿'+lines.join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const el=document.createElement('a');
+  el.href=url;el.download='akun-siswa-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(el);el.click();el.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
 function daysLeft(a){ if(!a.expiresAt)return '∞'; const d=Math.ceil((a.expiresAt-Date.now())/86400000); return d>0?d+' hari':'habis'; }
 function fmtDate(t){ return t?new Date(t).toLocaleDateString('id-ID'):'-'; }
 function renderAdminNav(){
@@ -1738,17 +1754,19 @@ function renderAdmin(){
     <div class="admform">
       <div><label>Nama siswa</label><input id="ad_name" placeholder="mis. Rangga Saputra"></div>
       <div><label>WhatsApp / Email siswa</label><input id="ad_contact" placeholder="0812xxxxxxx atau email@..."></div>
+      <div><label>Catatan / Paket (opsional)</label><input id="ad_note" placeholder="mis. Lynk · Paket 1 Bulan"></div>
       <button class="btn primary" onclick="adminCreate()">Buat Akun</button>
     </div>
     <div id="ad_result">${credHTML}</div>
   </div>
-  <div class="section-title"><span class="ic">👥</span> Daftar Siswa (${students.length})</div>
-  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email (login)</th><th>Password</th><th>Kontak</th><th>Dibuat</th><th>Berakhir</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+  <div class="section-title"><span class="ic">👥</span> Daftar Siswa (${students.length}) <button class="btn" style="margin-left:auto;font-size:12.5px;padding:7px 13px" onclick="exportCSV()">⬇️ Ekspor CSV</button></div>
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email (login)</th><th>Password</th><th>Kontak</th><th>Catatan/Paket</th><th>Dibuat</th><th>Berakhir</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
   ${students.length?students.map(a=>{const st=acctStatus(a);return `<tr>
     <td><b>${a.name||'-'}</b></td>
     <td><code>${a.email||'-'}</code></td>
     <td>${a.pw?'<code>'+a.pw+'</code>':'<span style="color:var(--muted)">—</span>'}</td>
     <td>${a.contact||'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${a.note?a.note:'<span style="color:var(--muted)">—</span>'}</td>
     <td>${fmtDate(a.createdAt)}</td>
     <td>${fmtDate(a.expiresAt)}</td>
     <td>${daysLeft(a)}</td>
@@ -1759,7 +1777,7 @@ function renderAdmin(){
       <button class="miniact" onclick="extendAccount('${a.uid}')">+${ACCESS_DAYS}h</button>
       ${st!=='archived'?`<button class="miniact" onclick="archiveAccount('${a.uid}')" style="color:var(--bad)">🗄️ Arsip</button>`:''}
     </td>
-  </tr>`;}).join(''):'<tr><td colspan="9" style="color:var(--muted);padding:20px;text-align:center">Belum ada akun siswa. Buat lewat form di atas.</td></tr>'}
+  </tr>`;}).join(''):'<tr><td colspan="10" style="color:var(--muted);padding:20px;text-align:center">Belum ada akun siswa. Buat lewat form di atas.</td></tr>'}
   </tbody></table></div>
   <div class="section-title"><span class="ic">🧑‍🏫</span> Akun Guru & Owner (${staff.length})</div>
   <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Dibuat</th></tr></thead><tbody>
@@ -1867,7 +1885,7 @@ function initApp(){
 }
 window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;window.doLogin=doLogin;window.doLogout=doLogout;window.fillLogin=fillLogin;
 window.startExercise=startExercise;window.exPick=exPick;window.exGoPage=exGoPage;window.exSubmit=exSubmit;
-window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;
+window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;window.exportCSV=exportCSV;
 initApp();
 </script>
 </body>
