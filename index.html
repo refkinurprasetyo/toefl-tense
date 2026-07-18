@@ -926,6 +926,57 @@ const EXERCISES={
  ]
 };
 
+/* ============ LEVEL LANJUTAN (ADVANCED, terkunci sampai semua latihan selesai) ============ */
+const ADV_META=[
+ {key:'adv1',name:'Tense & Aspect Mastery',desc:'Inversi negatif, perfect aspect, narrative tenses, wish/as if.'},
+ {key:'adv2',name:'Conditionals, Inversion & Subjunctive',desc:'Mixed conditionals, inversi (Had/Were/Should), subjunctive, wish.'},
+ {key:'adv3',name:'Structure & Error Mastery (TOEFL Pro)',desc:'Error identification lanjutan: agreement, parallelism, cleft, modifier.'}
+];
+const ADV_EX={
+ adv1:[
+  {t:'mc',q:`By the time she retires next year, she ___ for this company for 30 years.`,o:["will work","will have worked","will have been working","works"],a:2,e:`Durasi berlanjut sampai titik masa depan → Future Perfect Continuous.`},
+  {t:'mc',q:`Hardly ___ the meeting when the fire alarm went off.`,o:["we had started","had we started","did we start","we started"],a:1,e:`Inversi negatif: 'Hardly had + S + V3'.`},
+  {t:'err',p:["No sooner I had","arrived","than it","started to rain."],a:0,e:`Setelah 'No sooner' wajib inversi: 'No sooner had I arrived'.`},
+  {t:'mc',q:`I wish I ___ harder for the exam last year.`,o:["studied","had studied","would study","study"],a:1,e:`Penyesalan lampau → wish + Past Perfect.`},
+  {t:'mc',q:`She spoke as if she ___ the answer, but she actually didn't.`,o:["knows","knew","has known","would know"],a:1,e:`'as if' + past = pengandaian tak nyata masa kini → knew.`},
+  {t:'fill',q:`It's high time we ___ (leave) — we'll be late.`,a:["left"],e:`'It's high time' + past subjunctive → left.`},
+  {t:'mc',q:`Don't worry — the project ___ by the end of the month.`,o:["will complete","will be completed","will have been completed","completes"],a:2,e:`Selesai sebelum tenggat + pasif → Future Perfect Passive.`},
+  {t:'mc',q:`Never before ___ such a breathtaking sunset.`,o:["I had seen","had I seen","I saw","did I saw"],a:1,e:`Inversi: 'Never before had I seen'.`},
+  {t:'err',p:["By 2010, he has","already","written","three novels."],a:0,e:`'By 2010' (titik lampau) → Past Perfect: 'had already written'.`},
+  {t:'mc',q:`He denied ___ the money, but the evidence was clear.`,o:["to take","taking","take","taken"],a:1,e:`'deny' + gerund.`},
+  {t:'mc',q:`Scarcely had they sat down ___ the phone rang.`,o:["than","when","then","that"],a:1,e:`'Scarcely had ... when ...' (pasangan tetap).`},
+  {t:'fill',q:`Not until he apologized ___ (she / forgive) him.`,a:["did she forgive"],e:`Inversi setelah 'Not until ...': did she forgive.`}
+ ],
+ adv2:[
+  {t:'mc',q:`___ I known about the delay, I would have left earlier.`,o:["If","Had","Would","Were"],a:1,e:`Inversi Type 3: 'Had I known' (= If I had known).`},
+  {t:'mc',q:`The teacher insisted that every student ___ present at the ceremony.`,o:["is","was","be","were"],a:2,e:`Subjunctive setelah 'insist that ... be'.`},
+  {t:'mc',q:`If I had taken that job, I ___ in New York now.`,o:["would be","would have been","will be","am"],a:0,e:`Mixed conditional: syarat lampau, hasil kini → would be.`},
+  {t:'mc',q:`I'd rather you ___ smoke in here, please.`,o:["don't","didn't","not","won't"],a:1,e:`'would rather + S + past' → didn't.`},
+  {t:'err',p:["Should you needed","any help,","please","call me anytime."],a:0,e:`Inversi 'Should you need' (bentuk dasar), bukan 'needed'.`},
+  {t:'fill',q:`If only I ___ (know) the truth back then!`,a:["had known"],e:`'If only' + Past Perfect (penyesalan lampau).`},
+  {t:'mc',q:`It is essential that the report ___ submitted by Friday.`,o:["is","be","was","being"],a:1,e:`Subjunctive: 'essential that ... be submitted'.`},
+  {t:'mc',q:`___ it not been for your help, we would have failed.`,o:["If","Had","Were","Should"],a:1,e:`Inversi: 'Had it not been for' (= If it had not been for).`},
+  {t:'mc',q:`Suppose you ___ the lottery — what would you do?`,o:["win","won","had won","will win"],a:1,e:`Pengandaian tak nyata masa kini (Type 2) → won.`},
+  {t:'err',p:["If he would have","studied harder,","he would","have passed."],a:0,e:`Jangan 'would have' di klausa if → 'If he had studied'.`},
+  {t:'mc',q:`But for the rain, we ___ the match yesterday.`,o:["won","would win","would have won","will win"],a:2,e:`'But for' = kalau bukan karena → hasil Type 3.`},
+  {t:'mc',q:`He talks as though he ___ everything, but he's clueless.`,o:["knows","knew","had known","know"],a:1,e:`'as though' + past = pengandaian tak nyata masa kini.`}
+ ],
+ adv3:[
+  {t:'err',p:["The number of students who","have enrolled","this year","are increasing."],a:3,e:`'The number of ... is increasing' (subjek tunggal 'The number').`},
+  {t:'err',p:["Being a hot day,","we decided","to go","swimming."],a:0,e:`Dangling modifier: seharusnya 'It being a hot day' / 'As it was a hot day'.`},
+  {t:'mc',q:`The manager, along with his assistants, ___ attending the conference.`,o:["are","is","were","have"],a:1,e:`'along with ...' tidak mengubah subjek tunggal → is.`},
+  {t:'err',p:["Neither the students nor the teacher were","able to","solve","the problem."],a:0,e:`'Neither...nor' → verba ikut subjek terdekat (teacher, tunggal) → 'was'.`},
+  {t:'mc',q:`Each of the students ___ a different opinion on the topic.`,o:["have","has","are","were"],a:1,e:`'Each of ...' selalu tunggal → has.`},
+  {t:'err',p:["She is more taller","than","her","older sister."],a:0,e:`Comparative ganda: 'more taller' → 'taller'.`},
+  {t:'mc',q:`___ finishing the test, the students handed in their papers.`,o:["Upon","During","While","By"],a:0,e:`'Upon finishing' = segera setelah selesai.`},
+  {t:'err',p:["The book which I","told you","about it","is excellent."],a:2,e:`Objek relatif sudah diwakili 'which' → hapus 'it': 'told you about'.`},
+  {t:'mc',q:`Not only ___ late, but he also forgot the documents.`,o:["he was","was he","he is","did he"],a:1,e:`Inversi setelah 'Not only': 'was he late'.`},
+  {t:'err',p:["Despite of","the heavy rain,","they continued","the game."],a:0,e:`'Despite' tanpa 'of' (atau 'In spite of').`},
+  {t:'mc',q:`The teacher made the students ___ the essay again.`,o:["to rewrite","rewrite","rewriting","rewrote"],a:1,e:`'make + object + bare infinitive' → rewrite.`},
+  {t:'mc',q:`It was the manager ___ made the final decision, not the CEO.`,o:["which","who","whom","whose"],a:1,e:`Kalimat cleft menekankan orang → 'It was ... who'.`}
+ ]
+};
+
 /* ============ FIREBASE CONFIG ============ */
 /* Ganti nilai di bawah dengan config proyek Firebase Anda (Project settings → Your apps → Web). */
 const firebaseConfig = {
@@ -968,8 +1019,10 @@ function renderNav(){
     html+=`<li><button class="${state.current===a.id?'active':''} ${state.done[a.id]?'done':''}" data-go="${a.id}">
       <span class="num">${state.done[a.id]?'✓':'★'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.name}</span></button></li>`;
   });
+  const advOk=advUnlocked();
   html+=`</ul><div class="navgroup">Ujian</div><ul class="navlist">
     <li><button class="${state.current==='toefl'?'active':''} ${state.done['toefl']?'done':''}" data-go="toefl"><span class="num">${state.done['toefl']?'✓':'📝'}</span> Simulasi TOEFL</button></li>
+    <li><button class="${state.current==='advlevel'?'active':''}" data-go="advlevel"><span class="num">${advOk?'🏆':'🔒'}</span> Level Lanjutan</button></li>
     </ul>`;
   $("#nav").innerHTML=html;
   $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.current=b.dataset.go;document.getElementById('sidebar').classList.remove('open');render();scrollTo(0,0);});
@@ -1208,7 +1261,7 @@ function exQHTML(q,gi){
   return `<div class="quiz-q">${num}<div class="qtext">${qtext}</div>${hint}${btns}</div>`;
 }
 function renderExercise(key){
-  const m=$("#main");const qs=EXERCISES[key];
+  const m=$("#main");const qs=getEx(key);const back=key.indexOf('adv')===0?'advlevel':key;
   if(!qs){m.innerHTML='<p>Latihan tidak ditemukan.</p>';return;}
   exState={key,ans:{},page:0,timer:null,left:qs.length*EX_PER_Q,done:false};
   const perPage=Math.ceil(qs.length/2);
@@ -1228,7 +1281,7 @@ function renderExercise(key){
     <button class="btn primary" id="exnext" onclick="exGoPage(1)">Halaman 2 →</button>
     <button class="btn exsubmit" id="exfinish" onclick="exSubmit(false)" style="display:none">✅ Selesai & Nilai</button>
   </div>
-  <div style="text-align:center;margin-top:12px"><button class="btn" onclick="go('${key}')">✕ Keluar tanpa menilai</button></div>`;
+  <div style="text-align:center;margin-top:12px"><button class="btn" onclick="go('${back}')">✕ Keluar tanpa menilai</button></div>`;
   m.innerHTML=html;exStartTimer();
 }
 function exPick(gi,j){
@@ -1256,7 +1309,7 @@ function exStartTimer(){
 function exSubmit(timeUp){
   if(exState.done)return;exState.done=true;
   if(exState.timer){clearInterval(exState.timer);exState.timer=null;}
-  const key=exState.key,qs=EXERCISES[key];
+  const key=exState.key,qs=getEx(key);
   document.querySelectorAll('.exfill').forEach(inp=>{exState.ans[+inp.dataset.exi]=inp.value;});
   let correct=0;const rev=[];
   qs.forEach((q,i)=>{
@@ -1282,10 +1335,12 @@ function renderExResult(key,correct,total,pct,rev,timeUp,timeUsed){
   const m=$("#main");
   const msg=pct>=85?'🎉 Luar biasa! Penguasaan sangat baik.':pct>=60?'👍 Bagus — tinjau soal yang salah.':'💪 Pelajari lagi materi modulnya, lalu ulangi.';
   const mm=Math.floor(timeUsed/60),ss=timeUsed%60;
+  const justUnlock=key.indexOf('adv')!==0 && advUnlocked();
   let html=`<div class="kicker">HASIL LATIHAN</div><h2 class="title">📝 ${moduleName(key)}</h2>
     ${timeUp?'<div class="trap"><b>Waktu habis</b> — jawaban otomatis dikumpulkan.</div>':''}
     <div class="result show" style="position:static"><div class="score">${correct}/${total} (${pct}%)</div><div>${msg}</div>
     <div style="color:var(--muted);font-size:13px;margin-top:6px">Waktu terpakai: ${mm}m ${ss}s • Nilai tersimpan & terpantau guru</div></div>
+    ${justUnlock?'<div class="tip" style="border-color:var(--gold);text-align:center"><b>🏆 Selamat! Level Lanjutan kini TERBUKA</b> — semua latihan modul selesai. Buka menu <b>Level Lanjutan</b> di kiri untuk tantangan tingkat mahir. <button class="btn primary" style="margin-left:8px;padding:6px 14px" onclick="go(\'advlevel\')">Buka sekarang →</button></div>':''}
     <div class="section-title"><span class="ic">🔍</span> Pembahasan</div>`;
   rev.forEach(r=>{
     const qtext=r.q.t==='err'?r.q.p.map((p,j)=>'('+String.fromCharCode(65+j)+') '+p).join(' '):r.q.q.replace('___','_____');
@@ -1294,9 +1349,45 @@ function renderExResult(key,correct,total,pct,rev,timeUp,timeUsed){
       <div class="ans">Jawaban Anda: <b class="${r.ok?'good':'bad'}">${r.your}</b>${r.ok?'':' • Kunci: <b class="good">'+r.ansTxt+'</b>'}</div>
       <div style="color:var(--muted);font-size:12.5px;margin-top:3px">${r.e}</div></div>`;
   });
-  html+=`<div class="exnav"><button class="btn" onclick="go('${key}')">← Kembali ke modul</button>
+  const back=key.indexOf('adv')===0?'advlevel':key;
+  html+=`<div class="exnav"><button class="btn" onclick="go('${back}')">← Kembali ke ${key.indexOf('adv')===0?'Level Lanjutan':'modul'}</button>
     <button class="btn primary" onclick="startExercise('${key}')">🔁 Ulangi Latihan</button></div>`;
   m.innerHTML=html;scrollTo(0,0);renderNav();
+}
+
+function renderAdvLevel(){
+  const s=computeStats(state);
+  if(!s.advUnlocked){
+    const remaining=Object.keys(EXERCISES).filter(k=>!(state.exercises&&state.exercises[k]));
+    const pctUnlock=Math.round(s.exDone/s.exTotal*100);
+    return `<div class="kicker">LEVEL LANJUTAN</div>
+    <h2 class="title">🔒 Level Lanjutan Terkunci</h2>
+    <p class="subtitle">Selesaikan latihan soal di <b>semua ${s.exTotal} modul</b> untuk membuka 3 tantangan tingkat mahir.</p>
+    <div class="exlaunch" style="border-color:var(--line)">
+      <div style="flex:1"><b>Progres membuka level:</b> ${s.exDone} / ${s.exTotal} latihan selesai
+      <div class="barmini" style="margin-top:8px;max-width:340px"><i style="width:${pctUnlock}%"></i></div></div>
+      <div class="lastscore">${pctUnlock}%</div>
+    </div>
+    <div class="section-title"><span class="ic">📋</span> Latihan yang belum dikerjakan (${remaining.length})</div>
+    ${remaining.length?`<div class="mapgrid">${remaining.map(k=>`<div class="mapcell" onclick="go('${k}')"><div class="t">${moduleName(k)}</div><div class="f">klik untuk kerjakan →</div></div>`).join('')}</div>`:'<div class="tip">Semua latihan sudah selesai — muat ulang halaman untuk membuka level.</div>'}
+    <div class="tip"><b>Isi Level Lanjutan:</b> 3 tantangan tingkat mahir (B2–C1) — inversi, mixed conditionals, subjunctive, dan error identification serius. Nilainya tetap terpantau guru.</div>`;
+  }
+  return `<div class="kicker">LEVEL LANJUTAN • TERBUKA</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(255,209,102,.2),rgba(138,92,255,.12))">
+    <h2>🏆 Selamat! Level Lanjutan Terbuka</h2>
+    <p>Anda telah menyelesaikan semua latihan modul. Kini hadapi 3 tantangan tingkat mahir dengan soal yang lebih serius. Nilai tetap tersimpan & terpantau guru.</p></div>
+  <div class="section-title"><span class="ic">⚔️</span> Tantangan Tingkat Mahir</div>
+  ${ADV_META.map((a,i)=>{
+    const qs=ADV_EX[a.key];const mins=Math.ceil(qs.length*EX_PER_Q/60);
+    const sc=state.exercises&&state.exercises[a.key];
+    return `<div class="exlaunch">
+      <div style="flex:1"><b>Level ${i+1}: ${a.name}</b><br><span class="meta">${a.desc}</span><br>
+      <span class="meta">${qs.length} soal • waktu ${mins} menit • tingkat mahir</span>
+      ${sc?`<br><span class="lastscore">Nilai terakhir: ${sc.pct}% (${sc.correct}/${sc.total})</span>`:''}</div>
+      <button class="btn primary" style="padding:12px 20px" onclick="startExercise('${a.key}')">${sc?'🔁 Ulangi':'▶️ Mulai'}</button>
+    </div>`;
+  }).join('')}
+  <div class="pager"><button class="btn" style="flex:1;padding:14px" onclick="go('achievements')">← Kembali ke Pencapaian</button></div>`;
 }
 
 function render(){
@@ -1309,6 +1400,7 @@ function render(){
     if(state.current.startsWith('stu:')){renderStudentDetail(state.current.slice(4));return;}
   }
   if(state.current==="achievements"){m.innerHTML=renderAchievements();drawAchievementCharts();return;}
+  if(state.current==="advlevel"){m.innerHTML=renderAdvLevel();return;}
   if(state.current==="home"){m.innerHTML=renderHome();return;}
   if(state.current==="toefl"){m.innerHTML=renderToefl();startTimer();return;}
   if(state.current.startsWith("t")&&/^t\d+$/.test(state.current)){
@@ -1323,9 +1415,12 @@ function render(){
 function allModuleKeys(){return [...TENSES.map(t=>'t'+t.id),...ADVANCED.map(a=>a.id),'toefl'];}
 function moduleName(k){
   if(k==='toefl')return 'Simulasi TOEFL';
+  if(k.indexOf('adv')===0){const a=ADV_META.find(x=>x.key===k);return a?a.name:k;}
   if(/^t\d+$/.test(k)){const t=TENSES.find(x=>'t'+x.id===k);return t?t.name:k;}
   const a=ADVANCED.find(x=>x.id===k);return a?a.name:k;
 }
+function getEx(key){return EXERCISES[key]||ADV_EX[key];}
+function advUnlocked(st){const ex=(st||state).exercises||{};return Object.keys(EXERCISES).every(k=>ex[k]);}
 function computeStats(st){
   st=st||{};const done=st.done||{},scores=st.scores||{},drills=st.drills||{},exs=st.exercises||{};
   const keys=allModuleKeys();const total=keys.length;
@@ -1336,9 +1431,13 @@ function computeStats(st){
   const exKeys=Object.keys(EXERCISES);
   let eSum=0,eN=0;const exPer=[];
   exKeys.forEach(k=>{const e=exs[k];const p=(e&&e.total)?e.pct:null;if(p!==null){eSum+=p;eN++;}exPer.push({key:k,name:moduleName(k),pct:p});});
+  const advKeys=Object.keys(ADV_EX);
+  let aSum=0,aN=0;const advPer=[];
+  advKeys.forEach(k=>{const e=exs[k];const p=(e&&e.total)?e.pct:null;if(p!==null){aSum+=p;aN++;}advPer.push({key:k,name:moduleName(k),pct:p});});
   const toefl=scores['toefl']?Math.round(scores['toefl'].correct/scores['toefl'].total*100):null;
   return {total,completed,pct:Math.round(completed/total*100),avg:n?Math.round(sum/n):0,quizzesDone:n,per,toefl,drillCorrect:dC,drillTotal:dT,
-    exAvg:eN?Math.round(eSum/eN):0,exDone:eN,exTotal:exKeys.length,exPer};
+    exAvg:eN?Math.round(eSum/eN):0,exDone:eN,exTotal:exKeys.length,exPer,
+    advAvg:aN?Math.round(aSum/aN):0,advDone:aN,advTotal:advKeys.length,advPer,advUnlocked:exKeys.every(k=>exs[k])};
 }
 
 /* ============ CHART MGMT ============ */
@@ -1437,10 +1536,11 @@ async function renderTeacher(){
     <div style="height:320px"><canvas id="cmpChart"></canvas></div>
   </div>
   <div class="section-title"><span class="ic">👥</span> Tabel Statistik</div>
-  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Siswa</th><th>Nilai Latihan</th><th>Selesai</th><th>Progres</th><th>Rata Skor Kuis</th><th>TOEFL</th><th>Drill</th><th></th></tr></thead><tbody>
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Siswa</th><th>Nilai Latihan</th><th>Level Lanjutan</th><th>Selesai</th><th>Progres</th><th>Rata Skor Kuis</th><th>TOEFL</th><th>Drill</th><th></th></tr></thead><tbody>
   ${rows.map(r=>`<tr>
     <td><b>${r.s.name||r.s.email}</b><br><span style="color:var(--muted);font-size:11px">${r.s.email||''}</span></td>
     <td>${r.st.exDone?'<b style="color:var(--gold)">'+r.st.exAvg+'%</b> <span style="color:var(--muted);font-size:11px">('+r.st.exDone+'/'+r.st.exTotal+' latihan)</span>':'—'}</td>
+    <td>${r.st.advUnlocked?(r.st.advDone?'<b style="color:var(--pink)">'+r.st.advAvg+'%</b> <span style="color:var(--muted);font-size:11px">('+r.st.advDone+'/'+r.st.advTotal+')</span>':'🏆 terbuka'):'🔒 terkunci'}</td>
     <td>${r.st.completed}/${r.st.total}</td>
     <td><div class="barmini"><i style="width:${r.st.pct}%"></i></div></td>
     <td>${r.st.quizzesDone?r.st.avg+'%':'—'}</td>
@@ -1472,11 +1572,16 @@ function renderStudentDetail(uid){
     <div class="stat"><div class="big">${st.pct}%</div><div class="lab">penyelesaian (${st.completed}/${st.total})</div></div>
     <div class="stat"><div class="big">${st.quizzesDone?st.avg+'%':'—'}</div><div class="lab">rata-rata skor kuis</div></div>
     <div class="stat"><div class="big">${st.toefl!==null?st.toefl+'%':'—'}</div><div class="lab">skor TOEFL</div></div>
+    <div class="stat"><div class="big" style="color:var(--accent2)">${st.advUnlocked?(st.advDone?st.advAvg+'%':'🏆'):'🔒'}</div><div class="lab">Level Lanjutan ${st.advUnlocked?'('+st.advDone+'/'+st.advTotal+')':'terkunci'}</div></div>
   </div>
+  ${st.advDone?`<div class="chartbox"><h3>⚔️ Nilai Level Lanjutan (mahir)</h3><div style="height:220px"><canvas id="stuAdvChart"></canvas></div></div>`:''}
   <div class="chartbox"><h3>📝 Nilai latihan per modul</h3><div style="height:300px"><canvas id="stuExChart"></canvas></div></div>
   <div class="chartbox"><h3>📊 Skor kuis per modul</h3><div style="height:260px"><canvas id="stuChart"></canvas></div></div>
   <div class="pager"><button class="btn" style="flex:1;padding:14px" onclick="go('teacher')">← Kembali ke dashboard</button></div>`;
   if(window.Chart){
+    const adv=document.getElementById('stuAdvChart');
+    if(adv){const advDoneArr=st.advPer.filter(p=>p.pct!==null);
+      if(advDoneArr.length)chartRefs.push(new Chart(adv,{type:'bar',data:{labels:advDoneArr.map(p=>p.name),datasets:[{label:'Level Lanjutan (%)',data:advDoneArr.map(p=>p.pct),backgroundColor:CO.accent2,borderRadius:6}]},options:chartOpts()}));}
     const ex=document.getElementById('stuExChart');
     if(ex){ if(!exDoneArr.length){ex.parentElement.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px">Siswa ini belum mengerjakan latihan soal.</p>';}
       else chartRefs.push(new Chart(ex,{type:'bar',data:{labels:exDoneArr.map(p=>p.name),datasets:[{label:'Nilai Latihan (%)',data:exDoneArr.map(p=>p.pct),backgroundColor:CO.gold,borderRadius:6}]},options:chartOpts()})); }
