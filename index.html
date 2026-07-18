@@ -1418,7 +1418,7 @@ function render(){
   const m=$("#main");
   if(state.current.startsWith('ex:')){renderExercise(state.current.slice(3));return;}
   if(PROFILE&&(PROFILE.role==='teacher'||PROFILE.role==='admin')){
-    if(PROFILE.role==='admin'&&state.current==='admin'){renderAdminPage();return;}
+    if(state.current==='admin'){renderAdminPage();return;}
     if(state.current==='teacher'){renderTeacher();return;}
     if(state.current.startsWith('stu:')){renderStudentDetail(state.current.slice(4));return;}
   }
@@ -1519,7 +1519,10 @@ function drawAchievementCharts(){
 
 /* ============ TEACHER: NAV + DASHBOARD ============ */
 function renderTeacherNav(){
-  let html=`<ul class="navlist"><li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard</button></li></ul>`;
+  let html=`<ul class="navlist">
+    <li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard</button></li>
+    <li><button class="${state.current==='admin'?'active':''}" data-go="admin"><span class="num">🛠️</span> Kelola Akun</button></li>
+  </ul>`;
   html+=`<div class="navgroup">Siswa (${STUDENTS.length})</div><ul class="navlist">`;
   STUDENTS.forEach(s=>{html+=`<li><button class="${state.current==='stu:'+s.uid?'active':''}" data-go="stu:${s.uid}"><span class="num">👤</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name||s.email}</span></button></li>`;});
   html+=`</ul><div class="navgroup">Materi</div><ul class="navlist"><li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">📚</span> Lihat Materi</button></li></ul>`;
@@ -1616,7 +1619,7 @@ function renderStudentDetail(uid){
 
 /* ============ PANEL OWNER (ADMIN) ============ */
 const ACCESS_DAYS=30;
-let ALL_ACCOUNTS=[], lastCred=null;
+let ALL_ACCOUNTS=[], lastCred=null, editingUid=null;
 async function loadAllAccounts(){
   ALL_ACCOUNTS=[];
   try{
@@ -1690,6 +1693,43 @@ async function extendAccount(uid){
     await loadAllAccounts();await loadStudents();renderNav();$("#main").innerHTML=renderAdmin();
   }catch(e){alert('Gagal: '+e.message);}
 }
+function startEdit(uid){ editingUid=uid; $("#main").innerHTML=renderAdmin(); const e=document.getElementById('editbox'); if(e)e.scrollIntoView({behavior:'smooth',block:'center'}); }
+function cancelEdit(){ editingUid=null; $("#main").innerHTML=renderAdmin(); }
+async function saveEditStudent(uid){
+  const a=ALL_ACCOUNTS.find(x=>x.uid===uid); if(!a)return;
+  const newEmail=($("#ed_email").value||'').trim().toLowerCase();
+  const newPw=($("#ed_pw").value||'').trim();
+  const newContact=($("#ed_contact").value||'').trim();
+  const newNote=($("#ed_note").value||'').trim();
+  const days=parseInt($("#ed_days").value||'0',10);
+  const btn=$("#ed_save"); if(btn){btn.disabled=true;btn.textContent='Menyimpan…';}
+  const emailChange=newEmail && newEmail!==a.email;
+  const pwChange=newPw && newPw!==a.pw;
+  const warns=[];
+  if((pwChange||emailChange) && newPw && newPw.length<6){ alert('Password minimal 6 karakter.'); if(btn){btn.disabled=false;btn.textContent='Simpan';} return; }
+  if(emailChange||pwChange){
+    if(!a.pw){ alert('Akun ini belum menyimpan password, jadi email/password tidak bisa diubah dari sini. Ubah field lain saja.'); if(btn){btn.disabled=false;btn.textContent='Simpan';} return; }
+    const sec=firebase.initializeApp(firebaseConfig,'edit'+Date.now());
+    try{
+      const cred=await sec.auth().signInWithEmailAndPassword(a.email, a.pw);
+      if(pwChange){ await cred.user.updatePassword(newPw); }
+      if(emailChange){ try{ await cred.user.updateEmail(newEmail); }catch(e){ warns.push('Email tidak bisa diganti otomatis ('+e.code+') — field lain tetap disimpan.'); } }
+      await sec.auth().signOut();
+    }catch(e){ try{await sec.delete();}catch(_){}; alert('Gagal masuk ke akun untuk ubah email/password: '+e.code); if(btn){btn.disabled=false;btn.textContent='Simpan';} return; }
+    try{await sec.delete();}catch(e){}
+  }
+  const upd={};
+  if(pwChange) upd.pw=newPw;
+  if(emailChange && !warns.length) upd.email=newEmail;
+  if(newContact!==(a.contact||'')) upd.contact=newContact;
+  if(newNote!==(a.note||'')) upd.note=newNote;
+  if(days>0){ upd.expiresAt=Date.now()+days*86400000; upd.status='active'; }
+  try{ if(Object.keys(upd).length) await db.collection("users").doc(uid).set(upd,{merge:true}); }
+  catch(e){ alert('Gagal menyimpan ke database: '+e.code); if(btn){btn.disabled=false;btn.textContent='Simpan';} return; }
+  editingUid=null;
+  await loadAllAccounts();await loadStudents();renderNav();$("#main").innerHTML=renderAdmin();scrollTo(0,0);
+  if(warns.length) alert(warns.join('\n')); else alert('Perubahan tersimpan.');
+}
 function acctStatus(a){ if(a.status==='archived')return 'archived'; if(a.expiresAt&&Date.now()>a.expiresAt)return 'expired'; return 'active'; }
 function exportCSV(){
   const rows=ALL_ACCOUNTS.filter(a=>a.role==='student');
@@ -1722,9 +1762,9 @@ function renderAdminNav(){
   $("#progtext").textContent=`${STUDENTS.length} siswa • Owner`;$("#progfill").style.width='100%';
 }
 async function renderAdminPage(){
-  const m=$("#main");lastCred=null;
+  const m=$("#main");lastCred=null;editingUid=null;
   m.innerHTML=`<div class="kicker">PANEL OWNER</div><h2 class="title">🛠️ Kelola Akun Kelas</h2><p class="subtitle">Memuat data akun…</p>`;
-  await loadAllAccounts();await loadStudents();renderAdminNav();
+  await loadAllAccounts();await loadStudents();renderNav();
   m.innerHTML=renderAdmin();
 }
 function renderAdmin(){
@@ -1740,6 +1780,24 @@ function renderAdmin(){
       <button class="btn" onclick="copyMsg('${lastCred.uid}')">📋 Salin info login</button>
       ${waFor(lastCred)?`<a class="btn primary" href="${waFor(lastCred)}" target="_blank">💬 Kirim via WhatsApp</a>`:'<span style="color:var(--muted);font-size:12px;align-self:center">(isi WhatsApp untuk tombol kirim)</span>'}
     </div></div>`:'';
+  const attrEsc=s=>String(s==null?'':s).replace(/"/g,'&quot;');
+  let editHTML='';
+  if(editingUid){ const a=ALL_ACCOUNTS.find(x=>x.uid===editingUid);
+    if(a){ const dl=a.expiresAt?Math.max(1,Math.ceil((a.expiresAt-Date.now())/86400000)):ACCESS_DAYS;
+      editHTML=`<div class="admbox" id="editbox" style="border-color:var(--accent)">
+        <h3>✏️ Edit Akun — ${a.name||a.email}</h3>
+        <div class="admform" style="grid-template-columns:1fr 1fr 1fr">
+          <div><label>Email (login)</label><input id="ed_email" value="${attrEsc(a.email)}"></div>
+          <div><label>Password</label><input id="ed_pw" value="${attrEsc(a.pw)}"></div>
+          <div><label>Kontak (WA/email)</label><input id="ed_contact" value="${attrEsc(a.contact)}"></div>
+          <div><label>Catatan / Paket</label><input id="ed_note" value="${attrEsc(a.note)}"></div>
+          <div><label>Durasi akses (hari dari sekarang)</label><input id="ed_days" type="number" min="1" value="${dl}"></div>
+          <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" id="ed_save" onclick="saveEditStudent('${a.uid}')">Simpan</button><button class="btn" onclick="cancelEdit()">Batal</button></div>
+        </div>
+        <p style="color:var(--muted);font-size:12px;margin-top:8px">Mengubah email/password akan mengganti data login siswa. "Durasi" mengatur ulang masa aktif dihitung dari sekarang.</p>
+      </div>`;
+    }
+  }
   return `<div class="kicker">PANEL OWNER</div>
   <h2 class="title">🛠️ Kelola Akun Kelas</h2>
   <p class="subtitle">Buat akun siswa tiap ada pembelian di Lynk. Email = nama+angka unik, password acak & tetap (tak bisa diubah siswa), akses ${ACCESS_DAYS} hari lalu otomatis berakhir.</p>
@@ -1759,6 +1817,7 @@ function renderAdmin(){
     </div>
     <div id="ad_result">${credHTML}</div>
   </div>
+  ${editHTML}
   <div class="section-title"><span class="ic">👥</span> Daftar Siswa (${students.length}) <button class="btn" style="margin-left:auto;font-size:12.5px;padding:7px 13px" onclick="exportCSV()">⬇️ Ekspor CSV</button></div>
   <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email (login)</th><th>Password</th><th>Kontak</th><th>Catatan/Paket</th><th>Dibuat</th><th>Berakhir</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
   ${students.length?students.map(a=>{const st=acctStatus(a);return `<tr>
@@ -1772,6 +1831,7 @@ function renderAdmin(){
     <td>${daysLeft(a)}</td>
     <td><span class="badgePill ${st}">${st==='active'?'aktif':(st==='expired'?'kadaluarsa':'arsip')}</span></td>
     <td>
+      <button class="miniact" onclick="startEdit('${a.uid}')" style="color:var(--accent)">✏️ Edit</button>
       <button class="miniact" onclick="copyMsg('${a.uid}')">📋 Salin</button>
       ${waFor(a)?`<a class="miniact" href="${waFor(a)}" target="_blank">💬 WA</a>`:''}
       <button class="miniact" onclick="extendAccount('${a.uid}')">+${ACCESS_DAYS}h</button>
@@ -1780,8 +1840,8 @@ function renderAdmin(){
   </tr>`;}).join(''):'<tr><td colspan="10" style="color:var(--muted);padding:20px;text-align:center">Belum ada akun siswa. Buat lewat form di atas.</td></tr>'}
   </tbody></table></div>
   <div class="section-title"><span class="ic">🧑‍🏫</span> Akun Guru & Owner (${staff.length})</div>
-  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Dibuat</th></tr></thead><tbody>
-  ${staff.map(a=>`<tr><td><b>${a.name||'-'}</b></td><td><code>${a.email||'-'}</code></td><td><span class="badgePill active">${a.role==='admin'?'Owner':'Guru'}</span></td><td>${fmtDate(a.createdAt)}</td></tr>`).join('')}
+  <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Nama</th><th>Email</th><th>Password</th><th>Peran</th><th>Dibuat</th><th>Aksi</th></tr></thead><tbody>
+  ${staff.map(a=>`<tr><td><b>${a.name||'-'}</b></td><td><code>${a.email||'-'}</code></td><td>${a.pw?'<code>'+a.pw+'</code>':'<span style="color:var(--muted)">—</span>'}</td><td><span class="badgePill active">${a.role==='admin'?'Owner':'Guru'}</span></td><td>${fmtDate(a.createdAt)}</td><td><button class="miniact" onclick="startEdit('${a.uid}')" style="color:var(--accent)">✏️ Edit</button></td></tr>`).join('')}
   </tbody></table></div>
   <div style="margin-top:14px"><button class="btn" onclick="render()">🔄 Muat ulang</button></div>`;
 }
@@ -1886,6 +1946,7 @@ function initApp(){
 window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;window.doLogin=doLogin;window.doLogout=doLogout;window.fillLogin=fillLogin;
 window.startExercise=startExercise;window.exPick=exPick;window.exGoPage=exGoPage;window.exSubmit=exSubmit;
 window.adminCreate=adminCreate;window.archiveAccount=archiveAccount;window.extendAccount=extendAccount;window.copyMsg=copyMsg;window.exportCSV=exportCSV;
+window.startEdit=startEdit;window.cancelEdit=cancelEdit;window.saveEditStudent=saveEditStudent;
 initApp();
 </script>
 </body>
