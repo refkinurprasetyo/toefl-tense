@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEFL Tense Mastery — Kuasai 12 Tenses sampai Level Ujian</title>
+<style>
+:root{
+  --bg:#0b0f24; --bg2:#12183a; --card:#181f47; --card2:#212a5c; --card3:#2b356e;
+  --accent:#4f7cff; --accent2:#8a5cff; --teal:#22d3c5; --good:#2ee6a6; --bad:#ff6b6b;
+  --text:#eef1ff; --muted:#96a0d4; --line:#2e3872; --gold:#ffd166; --pink:#ff7eb6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.6;color:var(--text);
+  background:radial-gradient(1000px 500px at 85% -8%,#2a2f78 0%,transparent 55%),var(--bg);display:flex;min-height:100vh}
+a{color:var(--accent)}
+#sidebar{width:300px;flex-shrink:0;background:linear-gradient(180deg,var(--bg2),#0c1026);border-right:1px solid var(--line);
+  height:100vh;position:sticky;top:0;overflow-y:auto;padding:20px 14px}
+.brand{display:flex;align-items:center;gap:11px;margin-bottom:6px;padding:0 6px}
+.brand .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px}
+.brand h1{font-size:16px;line-height:1.15}
+.brand p{font-size:11px;color:var(--muted)}
+.progwrap{margin:14px 6px 6px;font-size:12px;color:var(--muted)}
+.progbar{height:8px;background:#0a0e26;border-radius:99px;overflow:hidden;margin-top:6px;border:1px solid var(--line)}
+.progbar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--accent));transition:width .5s}
+.navgroup{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin:16px 8px 5px;font-weight:700}
+.navlist{list-style:none}
+.navlist li{margin:2px 0}
+.navlist button{width:100%;text-align:left;background:transparent;border:1px solid transparent;color:var(--text);
+  padding:8px 10px;border-radius:9px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:.15s}
+.navlist button:hover{background:var(--card)}
+.navlist button.active{background:linear-gradient(90deg,rgba(79,124,255,.28),rgba(138,92,255,.14));border-color:var(--accent)}
+.navlist .num{width:22px;height:22px;flex-shrink:0;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.navlist button.done .num{background:var(--good);color:#06231a}
+#wrap{flex:1;min-width:0;display:flex;flex-direction:column}
+#main{flex:1;min-width:0;padding:30px 42px 90px;max-width:1000px}
+.mobtop{display:none}
+.kicker{color:var(--teal);font-weight:700;font-size:12.5px;letter-spacing:.06em}
+h2.title{font-size:29px;margin:2px 0 4px}
+.subtitle{color:var(--muted);font-size:15px}
+.badge{display:inline-block;font-size:11px;background:var(--card2);border:1px solid var(--line);padding:2px 9px;border-radius:99px;margin-left:8px;color:var(--gold);vertical-align:middle}
+.section-title{font-size:18px;margin:22px 0 12px;display:flex;align-items:center;gap:9px;font-weight:700}
+.section-title .ic{width:29px;height:29px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px}
+/* Formula box */
+.formula{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:10px 0}
+.formula .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.formula .row:last-child{border-bottom:none}
+.formula .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;min-width:74px;text-align:center}
+.tag.pos{background:rgba(46,230,166,.16);color:var(--good)}
+.tag.neg{background:rgba(255,107,107,.16);color:var(--bad)}
+.tag.qst{background:rgba(255,209,102,.16);color:var(--gold)}
+.formula code{background:#0c1130;border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-size:14px;color:#dfe4ff;font-family:"SF Mono",Consolas,monospace}
+.formula .hl{color:var(--teal);font-weight:700}
+/* Timeline */
+.timeline{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:12px 0}
+.tl-bar{position:relative;height:4px;background:var(--line);border-radius:99px;margin:34px 12px 30px}
+.tl-now{position:absolute;top:-13px;width:2px;height:30px;background:var(--pink)}
+.tl-now::after{content:"NOW";position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--pink);font-weight:700}
+.tl-x{position:absolute;top:-9px;width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);transform:translateX(-50%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.tl-line{position:absolute;top:-1px;height:6px;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:99px;transform:translateY(-1px)}
+.tl-label{position:absolute;top:14px;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+/* Uses / examples */
+.usebox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.usebox ul{margin-left:19px}
+.usebox li{margin:6px 0;font-size:14.5px}
+.usebox li .ex{display:block;color:var(--teal);font-size:13.5px;margin-top:2px}
+.signals{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px}
+.chip.gold{border-color:rgba(255,209,102,.4);color:var(--gold)}
+.exlist .exrow{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.exlist .en{font-size:15px;font-weight:600}
+.exlist .id{color:var(--muted);font-size:13px;margin-top:2px}
+.say{background:var(--card2);border:1px solid var(--line);color:var(--accent);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;flex-shrink:0;transition:.15s}
+.say:hover{background:var(--accent);color:#fff}
+.tip{background:linear-gradient(90deg,rgba(255,209,102,.12),transparent);border:1px solid rgba(255,209,102,.32);border-radius:11px;padding:11px 15px;margin:14px 0;font-size:14px}
+.tip b{color:var(--gold)}
+.trap{background:linear-gradient(90deg,rgba(255,107,107,.13),transparent);border:1px solid rgba(255,107,107,.32);border-radius:11px;padding:11px 15px;margin:14px 0;font-size:14px}
+.trap b{color:var(--bad)}
+/* Dialogue */
+.dialogue{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 6px}
+.line{display:flex;gap:11px;padding:10px 13px;align-items:flex-start}
+.line .who{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff}
+.line.a .who{background:linear-gradient(135deg,var(--accent),#3a6bd6)}
+.line.b .who{background:linear-gradient(135deg,var(--accent2),#5a3ad6)}
+.line .bubble{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;flex:1}
+.line .en{font-size:14.5px;font-weight:600;display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
+.line .en em{color:var(--teal);font-style:normal;font-weight:700}
+.line .id{color:var(--muted);font-size:12.5px;margin-top:3px;display:none}
+.dialogue.show-id .line .id{display:block}
+.toolbar{display:flex;gap:9px;margin:12px 0;flex-wrap:wrap}
+.btn{background:var(--card2);border:1px solid var(--line);color:var(--text);padding:8px 15px;border-radius:9px;cursor:pointer;font-size:13.5px;font-weight:600;transition:.15s}
+.btn:hover{border-color:var(--accent);background:var(--card)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none}
+.btn.primary:hover{filter:brightness(1.1)}
+/* Drill (fill in blank) */
+.drill{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 18px;margin:10px 0}
+.drill .dq{font-size:15px;margin-bottom:9px}
+.drill .dq .blank{display:inline-block;min-width:90px;border-bottom:2px solid var(--accent);color:var(--teal);font-weight:700;text-align:center}
+.drill input{background:#0c1130;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:8px;font-size:14px;width:180px}
+.drill input:focus{outline:none;border-color:var(--accent)}
+.drill .hint{color:var(--muted);font-size:12.5px;margin-left:8px}
+.drill .fb{margin-top:9px;font-size:13.5px;display:none;padding:8px 12px;border-radius:8px}
+.drill .fb.show{display:block}
+.drill .fb.ok{background:rgba(46,230,166,.14);color:var(--good)}
+.drill .fb.no{background:rgba(255,107,107,.14);color:#ffb4b4}
+/* Quiz / TOEFL */
+.quiz-q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 20px;margin:13px 0}
+.quiz-q .qnum{font-size:12px;color:var(--teal);font-weight:700}
+.quiz-q .qtext{font-size:15.5px;font-weight:600;margin:5px 0 11px}
+.quiz-q .qtext u{text-decoration:none;border-bottom:2px dotted var(--muted);padding:0 2px}
+.opt{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--text);
+  padding:10px 15px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14.5px;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{background:rgba(46,230,166,.18);border-color:var(--good)}
+.opt.wrong{background:rgba(255,107,107,.15);border-color:var(--bad)}
+.opt.disabled{cursor:default;opacity:.9}
+.explain{margin-top:9px;font-size:13.5px;color:var(--muted);background:#0c1130;border-radius:9px;padding:9px 13px;display:none}
+.explain.show{display:block}
+.result{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--accent);border-radius:14px;padding:18px 22px;margin:16px 0;text-align:center;display:none}
+.result.show{display:block}
+.result .score{font-size:34px;font-weight:800;color:var(--gold)}
+.pager{display:flex;justify-content:space-between;margin-top:34px;gap:12px}
+.pager .btn{flex:1;padding:13px}
+.markdone{background:linear-gradient(135deg,var(--good),#1cb583);border:none;color:#06231a;font-weight:800}
+/* Home */
+.hero{background:linear-gradient(135deg,rgba(79,124,255,.2),rgba(138,92,255,.12));border:1px solid var(--line);border-radius:20px;padding:34px 32px;margin-bottom:20px}
+.hero h2{font-size:31px}
+.hero p{color:var(--muted);font-size:16px;margin-top:8px;max-width:660px}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.mapcell{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.15s}
+.mapcell:hover{border-color:var(--accent);transform:translateY(-2px)}
+.mapcell .t{font-weight:700;font-size:14px}
+.mapcell .f{color:var(--teal);font-size:12px;font-family:monospace;margin-top:4px}
+.maphdr{grid-column:1/-1;color:var(--gold);font-weight:700;font-size:13px;margin-top:8px;letter-spacing:.04em}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px}
+.feat .ic{font-size:21px}.feat h4{margin:7px 0 3px;font-size:14.5px}.feat p{color:var(--muted);font-size:12.5px}
+/* timer */
+.timerbar{position:sticky;top:0;z-index:5;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.timerbar .clock{font-size:20px;font-weight:800;font-family:monospace;color:var(--gold)}
+@media(max-width:860px){
+  body{flex-direction:column}
+  #sidebar{width:100%;height:auto;position:relative;display:none}
+  #sidebar.open{display:block}
+  #main{padding:16px 15px 80px}
+  .mapgrid{grid-template-columns:1fr}
+  .mobtop{display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .mobtop button{background:var(--card2);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:9px;font-size:18px;cursor:pointer}
+  h2.title{font-size:23px}
+}
+</style>
+</head>
+<body>
+<aside id="sidebar">
+  <div class="brand">
+    <div class="logo">T</div>
+    <div><h1>TOEFL Tense Mastery</h1><p>12 tenses → level ujian</p></div>
+  </div>
+  <div class="progwrap"><span id="progtext">0 selesai</span>
+    <div class="progbar"><i id="progfill"></i></div></div>
+  <div id="nav"></div>
+</aside>
+<div id="wrap">
+  <div class="mobtop"><button onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button><b>TOEFL Tense Mastery</b></div>
+  <main id="main"></main>
+</div>
+<script>
+/* ============ DATA: 12 TENSES ============ */
+/* timeline: array of markers {pos:0-100, type:'point'|'range', from,to, label} ; now default at 50 */
+const TENSES=[
+{
+ id:1, group:"PRESENT", name:"Present Simple", nameId:"Simple Present",
+ formula:{pos:"S + V1 (+s/es utk he/she/it)", neg:"S + do/does + not + V1", qst:"Do/Does + S + V1 ?"},
+ tl:[{type:'point',pos:30,l:''},{type:'point',pos:50,l:''},{type:'point',pos:70,l:''}], tlnote:"Kejadian berulang / fakta — tersebar di sepanjang waktu",
+ uses:[
+   {u:"Fakta & kebenaran umum",ex:"Water boils at 100°C."},
+   {u:"Kebiasaan & rutinitas",ex:"She goes to the gym every day."},
+   {u:"Jadwal tetap (transportasi, acara)",ex:"The train leaves at 6 p.m."}
+ ],
+ signals:["always","usually","every day","often","never","sometimes"],
+ examples:[
+   {en:"The Earth revolves around the Sun.",id:"Bumi berputar mengelilingi Matahari."},
+   {en:"He doesn't drink coffee.",id:"Dia tidak minum kopi."},
+   {en:"Do they live in Jakarta?",id:"Apakah mereka tinggal di Jakarta?"}
+ ],
+ dialogue:[
+   {en:"What time does the library <em>open</em>?",id:"Jam berapa perpustakaan buka?"},
+   {en:"It <em>opens</em> at eight and <em>closes</em> at nine.",id:"Buka jam 8 dan tutup jam 9."},
+   {en:"<em>Do</em> you <em>go</em> there often?",id:"Kamu sering ke sana?"},
+   {en:"Yes, I usually <em>study</em> there after work.",id:"Ya, aku biasanya belajar di sana sepulang kerja."}
+ ],
+ drill:[
+   {q:"Every morning she ___ (drink) a glass of water.",a:["drinks"],hint:"he/she/it + -s"},
+   {q:"They ___ (not/like) spicy food.",a:["don't like","do not like"],hint:"negatif jamak"},
+   {q:"___ he ___ (speak) English? (pertanyaan)",a:["does speak","does...speak"],hint:"Does + S + V1"}
+ ],
+ quiz:[
+   {q:"Water ___ at 0°C.",o:["freeze","freezes","is freezing","froze"],a:1,e:"Fakta ilmiah → Present Simple; it + freezes."},
+   {q:"My father ___ television in the evening.",o:["watch","watches","watching","is watch"],a:1,e:"he/she/it menambah -es pada 'watch'."}
+ ]
+},
+{
+ id:2, group:"PRESENT", name:"Present Continuous", nameId:"Present Progressive",
+ formula:{pos:"S + am/is/are + V-ing", neg:"S + am/is/are + not + V-ing", qst:"Am/Is/Are + S + V-ing ?"},
+ tl:[{type:'range',from:42,to:58,l:'sekarang'}], tlnote:"Sedang berlangsung tepat saat berbicara",
+ uses:[
+   {u:"Aksi berlangsung saat ini",ex:"She is reading a book now."},
+   {u:"Situasi sementara",ex:"I am staying with my aunt this week."},
+   {u:"Rencana masa depan yang sudah pasti",ex:"We are meeting the client tomorrow."}
+ ],
+ signals:["now","right now","at the moment","currently","this week","Look!","Listen!"],
+ examples:[
+   {en:"Look! It is raining outside.",id:"Lihat! Sedang hujan di luar."},
+   {en:"They aren't working today.",id:"Mereka tidak bekerja hari ini."},
+   {en:"Why are you laughing?",id:"Kenapa kamu tertawa?"}
+ ],
+ dialogue:[
+   {en:"Hey, what <em>are</em> you <em>doing</em>?",id:"Hei, kamu sedang apa?"},
+   {en:"I<em>'m preparing</em> for my TOEFL test.",id:"Aku sedang mempersiapkan tes TOEFL."},
+   {en:"<em>Are</em> you <em>studying</em> grammar now?",id:"Kamu belajar grammar sekarang?"},
+   {en:"Yes, I<em>'m reviewing</em> the tenses at the moment.",id:"Ya, aku sedang mengulang tenses saat ini."}
+ ],
+ drill:[
+   {q:"Be quiet! The baby ___ (sleep).",a:["is sleeping"],hint:"is + V-ing"},
+   {q:"We ___ (not/watch) TV right now.",a:["aren't watching","are not watching"],hint:"negatif"},
+   {q:"What ___ you ___ (cook)? It smells good!",a:["are cooking","are...cooking"],hint:"Are + S + V-ing"}
+ ],
+ quiz:[
+   {q:"Listen! Someone ___ the piano.",o:["plays","is playing","play","played"],a:1,e:"'Listen!' menandakan aksi saat ini → Present Continuous."},
+   {q:"Which verb is NOT normally used in the continuous?",o:["run","know","eat","write"],a:1,e:"Stative verbs seperti 'know', 'like', 'want' tidak dipakai dalam continuous."}
+ ]
+},
+{
+ id:3, group:"PRESENT", name:"Present Perfect", nameId:"Present Perfect",
+ formula:{pos:"S + have/has + V3", neg:"S + have/has + not + V3", qst:"Have/Has + S + V3 ?"},
+ tl:[{type:'point',pos:22,l:'?'},{type:'range',from:22,to:50,l:''}], tlnote:"Kejadian di masa lalu yang terhubung ke sekarang (waktu tidak spesifik)",
+ uses:[
+   {u:"Pengalaman hidup (kapan tidak penting)",ex:"I have visited Japan twice."},
+   {u:"Aksi lampau dengan hasil di masa kini",ex:"She has lost her keys. (jadi sekarang tidak bisa masuk)"},
+   {u:"Aksi yang dimulai di masa lalu & masih berlanjut (with for/since)",ex:"We have lived here for ten years."}
+ ],
+ signals:["already","yet","just","ever","never","since","for","recently","so far"],
+ examples:[
+   {en:"I have just finished my homework.",id:"Aku baru saja menyelesaikan PR."},
+   {en:"Have you ever eaten sushi?",id:"Pernahkah kamu makan sushi?"},
+   {en:"He hasn't called me yet.",id:"Dia belum meneleponku."}
+ ],
+ dialogue:[
+   {en:"<em>Have</em> you <em>finished</em> the report?",id:"Sudahkah kamu selesaikan laporannya?"},
+   {en:"I<em>'ve</em> already <em>done</em> half of it.",id:"Aku sudah selesai setengahnya."},
+   {en:"<em>Have</em> you <em>studied</em> for TOEFL before?",id:"Pernah belajar untuk TOEFL sebelumnya?"},
+   {en:"No, I<em>'ve never taken</em> the test.",id:"Belum, aku belum pernah ikut tesnya."}
+ ],
+ drill:[
+   {q:"I ___ (know) her for five years.",a:["have known","'ve known"],hint:"for + Present Perfect"},
+   {q:"She ___ already ___ (leave).",a:["has left","has...left"],hint:"has + V3"},
+   {q:"___ you ever ___ (be) to London?",a:["have been","have...been"],hint:"pengalaman"}
+ ],
+ quiz:[
+   {q:"We ___ in this city since 2010.",o:["live","lived","have lived","are living"],a:2,e:"'since' + aksi berlanjut → Present Perfect."},
+   {q:"Choose the correct one:",o:["I have seen him yesterday","I have seen him last week","I have already seen that movie","I have saw it"],a:2,e:"Present Perfect tidak dipakai dengan waktu lampau spesifik (yesterday/last week)."}
+ ]
+},
+{
+ id:4, group:"PRESENT", name:"Present Perfect Continuous", nameId:"Present Perfect Progressive",
+ formula:{pos:"S + have/has + been + V-ing", neg:"S + have/has + not + been + V-ing", qst:"Have/Has + S + been + V-ing ?"},
+ tl:[{type:'range',from:18,to:50,l:''}], tlnote:"Menekankan durasi aksi yang dimulai di lampau & masih berlangsung",
+ uses:[
+   {u:"Aksi yang dimulai di lampau, masih berlanjut (menekankan lamanya)",ex:"I have been studying for three hours."},
+   {u:"Aksi baru selesai dengan hasil yang terlihat",ex:"She's tired because she has been running."}
+ ],
+ signals:["for","since","all day","how long","lately","recently"],
+ examples:[
+   {en:"It has been raining since morning.",id:"Hujan sudah turun sejak pagi."},
+   {en:"How long have you been waiting?",id:"Sudah berapa lama kamu menunggu?"},
+   {en:"They have been working on this project all week.",id:"Mereka mengerjakan proyek ini sepanjang minggu."}
+ ],
+ dialogue:[
+   {en:"You look exhausted. What<em>'ve</em> you <em>been doing</em>?",id:"Kamu tampak lelah. Sedang apa saja?"},
+   {en:"I<em>'ve been preparing</em> for the exam all day.",id:"Aku menyiapkan ujian seharian."},
+   {en:"How long <em>have</em> you <em>been studying</em> English?",id:"Sudah berapa lama belajar bahasa Inggris?"},
+   {en:"I<em>'ve been learning</em> it for two years.",id:"Aku sudah belajar dua tahun."}
+ ],
+ drill:[
+   {q:"He ___ (wait) for the bus for 20 minutes.",a:["has been waiting"],hint:"has been + V-ing"},
+   {q:"How long ___ they ___ (live) here?",a:["have been living","have...been living"],hint:"durasi"},
+   {q:"I'm tired because I ___ (work) all night.",a:["have been working","'ve been working"],hint:"hasil terlihat"}
+ ],
+ quiz:[
+   {q:"My eyes hurt. I ___ at the screen all day.",o:["have looked","have been looking","look","am looking"],a:1,e:"Menekankan durasi + hasil (mata sakit) → Perfect Continuous."},
+   {q:"She ___ Spanish for six months and speaks quite well now.",o:["has been learning","is learning","learns","learned"],a:0,e:"'for six months' + berlanjut → Present Perfect Continuous."}
+ ]
+},
+{
+ id:5, group:"PAST", name:"Past Simple", nameId:"Simple Past",
+ formula:{pos:"S + V2 (V-ed / irregular)", neg:"S + did + not + V1", qst:"Did + S + V1 ?"},
+ tl:[{type:'point',pos:25,l:'selesai'}], tlnote:"Aksi selesai di titik waktu tertentu di masa lalu",
+ uses:[
+   {u:"Aksi selesai di waktu lampau yang jelas",ex:"I watched a movie last night."},
+   {u:"Rangkaian kejadian lampau",ex:"He woke up, ate, and left."},
+   {u:"Kebiasaan lampau (sering dengan 'used to')",ex:"We played outside every day when we were kids."}
+ ],
+ signals:["yesterday","last week","in 2010","ago","when I was...","then"],
+ examples:[
+   {en:"They visited the museum yesterday.",id:"Mereka mengunjungi museum kemarin."},
+   {en:"I didn't see him at the party.",id:"Aku tidak melihatnya di pesta."},
+   {en:"Did she call you last night?",id:"Apakah dia meneleponmu tadi malam?"}
+ ],
+ dialogue:[
+   {en:"How <em>did</em> the interview <em>go</em>?",id:"Bagaimana wawancaranya?"},
+   {en:"It <em>went</em> well. They <em>asked</em> about my experience.",id:"Lancar. Mereka menanyakan pengalamanku."},
+   {en:"<em>Did</em> you <em>get</em> the job?",id:"Kamu dapat pekerjaannya?"},
+   {en:"Yes! They <em>offered</em> it right away.",id:"Ya! Mereka langsung menawarkannya."}
+ ],
+ drill:[
+   {q:"We ___ (go) to Bali last summer.",a:["went"],hint:"irregular: go→went"},
+   {q:"She ___ (not/finish) the test on time.",a:["didn't finish","did not finish"],hint:"did not + V1"},
+   {q:"___ you ___ (see) the news yesterday?",a:["did see","did...see"],hint:"Did + S + V1"}
+ ],
+ quiz:[
+   {q:"When I was young, I ___ in a small village.",o:["live","have lived","lived","was living"],a:2,e:"Waktu lampau spesifik → Past Simple."},
+   {q:"Correct the sentence: 'She didn't ___ dinner.'",o:["cooked","cooks","cook","cooking"],a:2,e:"Setelah 'didn't' pakai bentuk dasar V1."}
+ ]
+},
+{
+ id:6, group:"PAST", name:"Past Continuous", nameId:"Past Progressive",
+ formula:{pos:"S + was/were + V-ing", neg:"S + was/were + not + V-ing", qst:"Was/Were + S + V-ing ?"},
+ tl:[{type:'range',from:15,to:38,l:''},{type:'point',pos:28,l:'interupsi'}], tlnote:"Aksi sedang berlangsung di masa lalu, sering diinterupsi aksi lain",
+ uses:[
+   {u:"Aksi berlangsung pada momen lampau",ex:"At 8 p.m. I was having dinner."},
+   {u:"Aksi panjang diinterupsi aksi pendek (with when/while)",ex:"I was reading when the phone rang."},
+   {u:"Dua aksi paralel di masa lalu",ex:"She was cooking while he was cleaning."}
+ ],
+ signals:["while","when","at that time","as","all day yesterday"],
+ examples:[
+   {en:"It was snowing when we arrived.",id:"Sedang turun salju ketika kami tiba."},
+   {en:"They weren't listening to the teacher.",id:"Mereka tidak mendengarkan guru."},
+   {en:"What were you doing at midnight?",id:"Apa yang kamu lakukan tengah malam?"}
+ ],
+ dialogue:[
+   {en:"I called you last night but you didn't answer.",id:"Aku meneleponmu semalam tapi tak diangkat."},
+   {en:"Sorry, I <em>was taking</em> a shower.",id:"Maaf, aku sedang mandi."},
+   {en:"What <em>were</em> you <em>doing</em> at 10?",id:"Kamu sedang apa jam 10?"},
+   {en:"I <em>was studying</em> when you <em>called</em>.",id:"Aku sedang belajar ketika kamu menelepon."}
+ ],
+ drill:[
+   {q:"While I ___ (cook), the phone rang.",a:["was cooking"],hint:"aksi panjang"},
+   {q:"They ___ (play) football when it started to rain.",a:["were playing"],hint:"were + V-ing"},
+   {q:"What ___ she ___ (do) at that time?",a:["was doing","was...doing"],hint:"Was + S + V-ing"}
+ ],
+ quiz:[
+   {q:"I ___ TV when the lights went out.",o:["watched","was watching","have watched","watch"],a:1,e:"Aksi panjang diinterupsi (went out) → Past Continuous + Past Simple."},
+   {q:"While she ___, he was reading.",o:["slept","was sleeping","sleeps","has slept"],a:1,e:"Dua aksi paralel di lampau → keduanya Past Continuous."}
+ ]
+},
+{
+ id:7, group:"PAST", name:"Past Perfect", nameId:"Past Perfect",
+ formula:{pos:"S + had + V3", neg:"S + had + not + V3", qst:"Had + S + V3 ?"},
+ tl:[{type:'point',pos:15,l:'lebih dulu'},{type:'point',pos:35,l:'lalu ini'}], tlnote:"Aksi yang selesai SEBELUM aksi lampau lain — 'masa lalunya masa lalu'",
+ uses:[
+   {u:"Aksi selesai sebelum aksi lampau lain",ex:"The train had left when we arrived."},
+   {u:"Menjelaskan penyebab di masa lalu",ex:"She was upset because she had failed the test."},
+   {u:"Dalam reported speech (backshift dari Present Perfect/Past)",ex:"He said he had finished."}
+ ],
+ signals:["before","after","by the time","already","when","until then"],
+ examples:[
+   {en:"By the time I got up, everyone had left.",id:"Saat aku bangun, semua orang sudah pergi."},
+   {en:"I hadn't seen snow before I moved there.",id:"Aku belum pernah lihat salju sebelum pindah ke sana."},
+   {en:"Had you eaten before the meeting?",id:"Apakah kamu sudah makan sebelum rapat?"}
+ ],
+ dialogue:[
+   {en:"Why were you late to the movie?",id:"Kenapa telat ke bioskop?"},
+   {en:"By the time I arrived, it <em>had</em> already <em>started</em>.",id:"Saat aku tiba, filmnya sudah mulai."},
+   {en:"<em>Had</em> you <em>bought</em> the ticket online?",id:"Sudah beli tiketnya online?"},
+   {en:"No, and they <em>had sold</em> out by then.",id:"Belum, dan sudah habis terjual saat itu."}
+ ],
+ drill:[
+   {q:"When we arrived, the movie ___ already ___ (start).",a:["had started","had...started"],hint:"had + V3"},
+   {q:"She ___ (not/see) the email before she called.",a:["hadn't seen","had not seen"],hint:"negatif"},
+   {q:"After he ___ (finish) work, he went home.",a:["had finished"],hint:"aksi pertama"}
+ ],
+ quiz:[
+   {q:"They ___ dinner before the guests arrived.",o:["had","had had","have had","were having"],a:1,e:"Aksi (makan malam) selesai sebelum aksi lampau lain → Past Perfect: had had."},
+   {q:"I realized I ___ my wallet at home.",o:["leave","left","had left","have left"],a:2,e:"Meninggalkan dompet terjadi lebih dulu → Past Perfect."}
+ ]
+},
+{
+ id:8, group:"PAST", name:"Past Perfect Continuous", nameId:"Past Perfect Progressive",
+ formula:{pos:"S + had + been + V-ing", neg:"S + had + not + been + V-ing", qst:"Had + S + been + V-ing ?"},
+ tl:[{type:'range',from:10,to:33,l:''},{type:'point',pos:40,l:'lalu ini'}], tlnote:"Durasi aksi yang berlangsung sebelum momen lampau lain",
+ uses:[
+   {u:"Durasi aksi yang berlangsung sampai/menjelang titik lampau",ex:"He had been driving for hours before he stopped."},
+   {u:"Menjelaskan sebab situasi lampau",ex:"The ground was wet because it had been raining."}
+ ],
+ signals:["for","since","before","how long","all morning"],
+ examples:[
+   {en:"She was tired because she had been working all day.",id:"Dia lelah karena sudah bekerja seharian."},
+   {en:"We had been waiting for an hour when the bus came.",id:"Kami sudah menunggu sejam ketika bus datang."},
+   {en:"How long had they been living there before they moved?",id:"Berapa lama mereka tinggal di sana sebelum pindah?"}
+ ],
+ dialogue:[
+   {en:"You passed the test! Congrats.",id:"Kamu lulus tes! Selamat."},
+   {en:"Thanks. I <em>had been studying</em> for months.",id:"Terima kasih. Aku sudah belajar berbulan-bulan."},
+   {en:"How long <em>had</em> you <em>been preparing</em>?",id:"Berapa lama kamu mempersiapkannya?"},
+   {en:"I <em>had been practicing</em> daily since January.",id:"Aku berlatih setiap hari sejak Januari."}
+ ],
+ drill:[
+   {q:"He was out of breath; he ___ (run).",a:["had been running"],hint:"had been + V-ing"},
+   {q:"They ___ (wait) for hours before the train arrived.",a:["had been waiting"],hint:"durasi lampau"},
+   {q:"How long ___ you ___ (study) before you took the exam?",a:["had been studying","had...been studying"],hint:"Had + been + V-ing"}
+ ],
+ quiz:[
+   {q:"The players were exhausted because they ___ for 90 minutes.",o:["played","were playing","had been playing","have played"],a:2,e:"Durasi sebelum momen lampau + sebab → Past Perfect Continuous."},
+   {q:"By 2020, she ___ in Paris for a decade.",o:["had been living","has been living","was living","lived"],a:0,e:"Durasi sampai titik lampau (By 2020) → Past Perfect Continuous."}
+ ]
+},
+{
+ id:9, group:"FUTURE", name:"Future Simple", nameId:"Simple Future (will / be going to)",
+ formula:{pos:"S + will + V1  |  S + am/is/are + going to + V1", neg:"S + will + not (won't) + V1", qst:"Will + S + V1 ?"},
+ tl:[{type:'point',pos:72,l:'nanti'}], tlnote:"Aksi di masa depan",
+ uses:[
+   {u:"Keputusan spontan / janji / tawaran (will)",ex:"I'll help you with that."},
+   {u:"Prediksi (will / going to)",ex:"It will rain tomorrow. / It's going to rain."},
+   {u:"Rencana & niat (going to)",ex:"We are going to start a business."}
+ ],
+ signals:["tomorrow","next week","soon","in the future","in 2030","I think..."],
+ examples:[
+   {en:"I think she will pass the exam.",id:"Kurasa dia akan lulus ujian."},
+   {en:"They won't be here on time.",id:"Mereka tidak akan tiba tepat waktu."},
+   {en:"Are you going to travel this year?",id:"Apakah kamu akan bepergian tahun ini?"}
+ ],
+ dialogue:[
+   {en:"I<em>'m going to take</em> the TOEFL next month.",id:"Aku akan ikut TOEFL bulan depan."},
+   {en:"Really? I<em>'ll help</em> you practice.",id:"Sungguh? Aku akan bantu kamu latihan."},
+   {en:"Thanks! Do you think I<em>'ll pass</em>?",id:"Terima kasih! Menurutmu aku akan lulus?"},
+   {en:"I'm sure you <em>will</em>.",id:"Aku yakin kamu akan lulus."}
+ ],
+ drill:[
+   {q:"Look at those clouds! It ___ (rain). (rencana/tanda jelas)",a:["is going to rain"],hint:"bukti sekarang → going to"},
+   {q:"I promise I ___ (call) you tonight.",a:["will call","'ll call"],hint:"janji → will"},
+   {q:"They ___ (not/come) to the party.",a:["won't come","will not come"],hint:"negatif will"}
+ ],
+ quiz:[
+   {q:"A: The phone is ringing. B: I ___ it.",o:["will get","am going to get","get","am getting"],a:0,e:"Keputusan spontan saat itu → will."},
+   {q:"We've already decided: we ___ move to Canada.",o:["will","are going to","would","won't"],a:1,e:"Rencana yang sudah diputuskan → be going to."}
+ ]
+},
+{
+ id:10, group:"FUTURE", name:"Future Continuous", nameId:"Future Progressive",
+ formula:{pos:"S + will + be + V-ing", neg:"S + will + not + be + V-ing", qst:"Will + S + be + V-ing ?"},
+ tl:[{type:'range',from:62,to:82,l:'saat itu nanti'}], tlnote:"Aksi yang akan sedang berlangsung pada momen tertentu di masa depan",
+ uses:[
+   {u:"Aksi berlangsung pada waktu tertentu di masa depan",ex:"At 9 p.m. tomorrow I will be flying to Tokyo."},
+   {u:"Aksi terencana yang pasti terjadi",ex:"I'll be seeing her next week anyway."}
+ ],
+ signals:["at this time tomorrow","this time next week","in the future","when you arrive"],
+ examples:[
+   {en:"Don't call at 8 — I'll be having dinner.",id:"Jangan telepon jam 8 — aku akan sedang makan malam."},
+   {en:"This time next year, she'll be studying abroad.",id:"Tahun depan saat ini, dia akan sedang kuliah di luar negeri."},
+   {en:"Will you be using the car tonight?",id:"Apakah kamu akan memakai mobil malam ini?"}
+ ],
+ dialogue:[
+   {en:"Can we meet at 3 tomorrow?",id:"Bisa bertemu jam 3 besok?"},
+   {en:"Sorry, I<em>'ll be attending</em> a meeting then.",id:"Maaf, aku akan sedang rapat saat itu."},
+   {en:"What about 5? What <em>will</em> you <em>be doing</em>?",id:"Kalau jam 5? Kamu akan sedang apa?"},
+   {en:"By 5 I<em>'ll be heading</em> home. That works.",id:"Jam 5 aku akan menuju rumah. Itu cocok."}
+ ],
+ drill:[
+   {q:"At 10 a.m. tomorrow, I ___ (take) the exam.",a:["will be taking","'ll be taking"],hint:"will be + V-ing"},
+   {q:"This time next week we ___ (relax) on the beach.",a:["will be relaxing","'ll be relaxing"],hint:"momen masa depan"},
+   {q:"___ you ___ (work) late tonight?",a:["will be working","will...be working"],hint:"Will + S + be + V-ing"}
+ ],
+ quiz:[
+   {q:"Don't come at noon; we ___ lunch then.",o:["will have","will be having","have","are having"],a:1,e:"Aksi berlangsung pada waktu tertentu di masa depan → Future Continuous."},
+   {q:"This time tomorrow, they ___ over the ocean.",o:["will fly","fly","will be flying","are flying"],a:2,e:"'This time tomorrow' → Future Continuous."}
+ ]
+},
+{
+ id:11, group:"FUTURE", name:"Future Perfect", nameId:"Future Perfect",
+ formula:{pos:"S + will + have + V3", neg:"S + will + not + have + V3", qst:"Will + S + have + V3 ?"},
+ tl:[{type:'range',from:55,to:75,l:''},{type:'point',pos:78,l:'batas waktu'}], tlnote:"Aksi yang akan SELESAI sebelum titik waktu tertentu di masa depan",
+ uses:[
+   {u:"Aksi selesai sebelum tenggat masa depan",ex:"By 2030, I will have graduated."},
+   {u:"Prediksi bahwa sesuatu sudah selesai pada saat X",ex:"By next month, she'll have finished the course."}
+ ],
+ signals:["by","by the time","by then","before","by 2030","in two years"],
+ examples:[
+   {en:"By the end of the year, we will have saved enough.",id:"Sampai akhir tahun, kami akan sudah menabung cukup."},
+   {en:"He won't have finished by Friday.",id:"Dia belum akan selesai sampai Jumat."},
+   {en:"Will you have completed the report by 5?",id:"Akankah laporan selesai sebelum jam 5?"}
+ ],
+ dialogue:[
+   {en:"When can I see the final draft?",id:"Kapan aku bisa lihat draf finalnya?"},
+   {en:"By Monday I<em>'ll have finished</em> it.",id:"Sampai Senin aku akan sudah menyelesaikannya."},
+   {en:"And the design?",id:"Dan desainnya?"},
+   {en:"We<em>'ll have completed</em> everything by then.",id:"Kami akan sudah merampungkan semuanya saat itu."}
+ ],
+ drill:[
+   {q:"By next year, I ___ (finish) my degree.",a:["will have finished","'ll have finished"],hint:"will have + V3"},
+   {q:"By the time you arrive, they ___ (leave).",a:["will have left","'ll have left"],hint:"selesai sebelum X"},
+   {q:"___ she ___ (complete) the task by noon?",a:["will have completed","will...have completed"],hint:"Will + have + V3"}
+ ],
+ quiz:[
+   {q:"By 2035, scientists ___ a cure, hopefully.",o:["will find","will have found","find","are finding"],a:1,e:"Selesai sebelum tenggat masa depan → Future Perfect."},
+   {q:"By the time the movie ends, we ___ here for three hours.",o:["will sit","will be sitting","will have sat","sit"],a:2,e:"Durasi selesai pada titik masa depan → Future Perfect."}
+ ]
+},
+{
+ id:12, group:"FUTURE", name:"Future Perfect Continuous", nameId:"Future Perfect Progressive",
+ formula:{pos:"S + will + have + been + V-ing", neg:"S + will + not + have + been + V-ing", qst:"Will + S + have + been + V-ing ?"},
+ tl:[{type:'range',from:48,to:78,l:'durasi sampai X'},{type:'point',pos:80,l:'titik masa depan'}], tlnote:"Durasi aksi yang akan berlangsung SAMPAI titik tertentu di masa depan",
+ uses:[
+   {u:"Menekankan durasi aksi menjelang titik masa depan",ex:"By June, I will have been teaching for ten years."},
+   {u:"Aksi yang masih berlangsung sampai momen masa depan tersebut",ex:"By 5 p.m., they'll have been driving for eight hours."}
+ ],
+ signals:["by...for","by the time","for + durasi","by then"],
+ examples:[
+   {en:"By next month, she will have been living here for a year.",id:"Bulan depan, dia akan sudah tinggal di sini selama setahun."},
+   {en:"In an hour, I will have been studying for four hours straight.",id:"Sejam lagi, aku akan sudah belajar 4 jam nonstop."},
+   {en:"Will you have been working here for 20 years by 2030?",id:"Apakah kamu akan sudah bekerja 20 tahun di sini pada 2030?"}
+ ],
+ dialogue:[
+   {en:"You've been preparing so hard.",id:"Kamu berlatih sangat keras."},
+   {en:"By test day, I<em>'ll have been studying</em> for six months.",id:"Sampai hari ujian, aku akan sudah belajar enam bulan."},
+   {en:"That's dedication!",id:"Itu dedikasi!"},
+   {en:"By then I<em>'ll have been practicing</em> speaking daily too.",id:"Saat itu aku juga akan sudah latihan speaking tiap hari."}
+ ],
+ drill:[
+   {q:"By 9 p.m., I ___ (drive) for six hours.",a:["will have been driving","'ll have been driving"],hint:"will have been + V-ing"},
+   {q:"Next month she ___ (work) here for five years.",a:["will have been working","'ll have been working"],hint:"durasi sampai X"},
+   {q:"How long ___ you ___ (learn) English by December?",a:["will have been learning","will...have been learning"],hint:"pertanyaan durasi"}
+ ],
+ quiz:[
+   {q:"By the time you finish, I ___ for two hours.",o:["will wait","will have waited","will have been waiting","am waiting"],a:2,e:"Menekankan durasi berlangsung sampai titik masa depan → Future Perfect Continuous."},
+   {q:"By 2027, they ___ this bridge for five years.",o:["will build","will have been building","are building","have built"],a:1,e:"Durasi konstruksi berlanjut sampai titik masa depan → Future Perfect Continuous."}
+ ]
+}
+];
+
+/* ============ ADVANCED TOPICS ============ */
+const ADVANCED=[
+{
+ id:"a1", group:"LANJUTAN", name:"Present Perfect vs Past Simple", nameId:"Jebakan TOEFL #1",
+ body:`<div class="usebox"><p>Ini salah satu kesalahan paling sering diuji di TOEFL. Kuncinya: <b>apakah waktunya spesifik?</b></p>
+ <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:14px">
+ <tr><th style="border:1px solid var(--line);padding:8px;background:var(--card2);color:var(--gold)">Past Simple</th><th style="border:1px solid var(--line);padding:8px;background:var(--card2);color:var(--gold)">Present Perfect</th></tr>
+ <tr><td style="border:1px solid var(--line);padding:8px">Waktu lampau <b>spesifik/selesai</b></td><td style="border:1px solid var(--line);padding:8px">Waktu <b>tidak spesifik</b> / terhubung ke kini</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:8px">yesterday, last year, in 2010, ago</td><td style="border:1px solid var(--line);padding:8px">already, yet, ever, never, just, since, for, so far</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:8px">I <b>saw</b> him <b>yesterday</b>. ✅</td><td style="border:1px solid var(--line);padding:8px">I <b>have</b> just <b>seen</b> him. ✅</td></tr>
+ </table></div>
+ <div class="trap"><b>Jebakan:</b> ❌ I <s>have seen</s> him yesterday. → ✅ I <b>saw</b> him yesterday. Kalau ada penanda waktu lampau spesifik, WAJIB Past Simple.</div>
+ <div class="tip"><b>Trik cepat:</b> Lihat penanda waktu di kalimat. "since / for / already / yet / ever / never" → Present Perfect. "yesterday / ago / last..." → Past Simple.</div>`,
+ quiz:[
+   {q:"I ___ my homework two hours ago.",o:["have finished","finished","have been finishing","finish"],a:1,e:"'two hours ago' = waktu lampau spesifik → Past Simple."},
+   {q:"She ___ to Europe three times (in her life).",o:["went","has gone","has been","was going"],a:2,e:"Pengalaman hidup, waktu tidak spesifik → Present Perfect (has been = pernah ke sana & kembali)."},
+   {q:"___ you ___ your keys? I can't find them anywhere.",o:["Did / see","Have / seen","Do / see","Had / seen"],a:1,e:"Relevansi ke sekarang (belum ketemu) → Present Perfect."},
+   {q:"We ___ in Bali last summer and loved it.",o:["have stayed","stayed","have been staying","stay"],a:1,e:"'last summer' → Past Simple."}
+ ]
+},
+{
+ id:"a2", group:"LANJUTAN", name:"Conditionals (If-clauses)", nameId:"Kalimat Pengandaian",
+ body:`<div class="usebox"><p>TOEFL sering menguji kesesuaian tense antara klausa 'if' dan klausa utama.</p>
+ <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px">
+ <tr><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Tipe</th><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Rumus</th><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Contoh</th></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px"><b>0</b> fakta</td><td style="border:1px solid var(--line);padding:7px">If + present, present</td><td style="border:1px solid var(--line);padding:7px">If you heat ice, it melts.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px"><b>1</b> nyata (masa depan)</td><td style="border:1px solid var(--line);padding:7px">If + present, will + V1</td><td style="border:1px solid var(--line);padding:7px">If it rains, I will stay home.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px"><b>2</b> tak nyata (kini)</td><td style="border:1px solid var(--line);padding:7px">If + past, would + V1</td><td style="border:1px solid var(--line);padding:7px">If I were rich, I would travel.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px"><b>3</b> tak nyata (lampau)</td><td style="border:1px solid var(--line);padding:7px">If + past perfect, would have + V3</td><td style="border:1px solid var(--line);padding:7px">If I had studied, I would have passed.</td></tr>
+ </table></div>
+ <div class="trap"><b>Jebakan klasik:</b> ❌ If I <s>will see</s> him... → ✅ If I <b>see</b> him... Jangan pakai 'will' di klausa 'if' (tipe 0/1).</div>
+ <div class="tip"><b>Ingat Type 2:</b> Gunakan <b>were</b> untuk semua subjek (If I <b>were</b> you...). Ini bentuk subjunctive yang sering diuji.</div>`,
+ quiz:[
+   {q:"If it ___ tomorrow, we will cancel the trip.",o:["will rain","rains","rained","would rain"],a:1,e:"Type 1: If + present simple, ... will."},
+   {q:"If I ___ you, I would apologize.",o:["am","was","were","will be"],a:2,e:"Type 2 subjunctive: If I were you..."},
+   {q:"If she had left earlier, she ___ the flight.",o:["would catch","will catch","would have caught","caught"],a:2,e:"Type 3: If + past perfect, would have + V3."},
+   {q:"Water boils if you ___ it to 100°C.",o:["will heat","heat","heated","would heat"],a:1,e:"Type 0 (fakta): present + present."}
+ ]
+},
+{
+ id:"a3", group:"LANJUTAN", name:"Passive Voice", nameId:"Kalimat Pasif di Semua Tense",
+ body:`<div class="usebox"><p>Pola dasar pasif: <b>be + V3 (past participle)</b>. Bentuk 'be' menyesuaikan tense. Objek kalimat aktif menjadi subjek.</p>
+ <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px">
+ <tr><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Tense</th><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Aktif</th><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Pasif</th></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Present Simple</td><td style="border:1px solid var(--line);padding:7px">They make cars.</td><td style="border:1px solid var(--line);padding:7px">Cars <b>are made</b>.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Past Simple</td><td style="border:1px solid var(--line);padding:7px">She wrote it.</td><td style="border:1px solid var(--line);padding:7px">It <b>was written</b>.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Present Perfect</td><td style="border:1px solid var(--line);padding:7px">They have built it.</td><td style="border:1px solid var(--line);padding:7px">It <b>has been built</b>.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Future</td><td style="border:1px solid var(--line);padding:7px">We will finish it.</td><td style="border:1px solid var(--line);padding:7px">It <b>will be finished</b>.</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Modal</td><td style="border:1px solid var(--line);padding:7px">You must do it.</td><td style="border:1px solid var(--line);padding:7px">It <b>must be done</b>.</td></tr>
+ </table></div>
+ <div class="tip"><b>Kapan pakai pasif?</b> Saat pelaku tidak penting/tidak diketahui, atau untuk gaya formal/akademik (sering di reading TOEFL). "The experiment <b>was conducted</b> in 2019."</div>`,
+ quiz:[
+   {q:"The Mona Lisa ___ by Leonardo da Vinci.",o:["painted","was painted","has painted","is painting"],a:1,e:"Objek jadi subjek, aksi lampau → was + painted (V3)."},
+   {q:"English ___ all over the world.",o:["speaks","is speaking","is spoken","spoke"],a:2,e:"Present Simple passive → is/are + V3 (spoken)."},
+   {q:"The bridge ___ next year.",o:["will build","will be built","is built","builds"],a:1,e:"Future passive → will be + V3."},
+   {q:"This report must ___ by Friday.",o:["finish","be finished","finished","being finished"],a:1,e:"Modal passive → modal + be + V3."}
+ ]
+},
+{
+ id:"a4", group:"LANJUTAN", name:"Reported Speech", nameId:"Kalimat Tak Langsung (Backshift)",
+ body:`<div class="usebox"><p>Saat melaporkan ucapan orang, tense biasanya <b>mundur satu langkah</b> (backshift).</p>
+ <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px">
+ <tr><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Direct</th><th style="border:1px solid var(--line);padding:7px;background:var(--card2);color:var(--gold)">Reported</th></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Present Simple → </td><td style="border:1px solid var(--line);padding:7px">Past Simple</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Present Continuous → </td><td style="border:1px solid var(--line);padding:7px">Past Continuous</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">Past Simple / Present Perfect → </td><td style="border:1px solid var(--line);padding:7px">Past Perfect</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">will → </td><td style="border:1px solid var(--line);padding:7px">would</td></tr>
+ <tr><td style="border:1px solid var(--line);padding:7px">can → </td><td style="border:1px solid var(--line);padding:7px">could</td></tr>
+ </table>
+ <p style="font-size:14px"><b>Contoh:</b> "I <b>am</b> tired." → She said she <b>was</b> tired.<br>
+ "I <b>have finished</b>." → He said he <b>had finished</b>.<br>
+ "I <b>will</b> call." → She said she <b>would</b> call.</p></div>
+ <div class="tip"><b>Penanda waktu ikut berubah:</b> now→then, today→that day, tomorrow→the next day, yesterday→the day before, this→that.</div>`,
+ quiz:[
+   {q:"Direct: \"I am busy.\" → He said he ___ busy.",o:["is","was","has been","would be"],a:1,e:"Present Simple → Past Simple (am → was)."},
+   {q:"Direct: \"I will help you.\" → She said she ___ help me.",o:["will","would","had","would have"],a:1,e:"will → would."},
+   {q:"Direct: \"I have seen it.\" → He said he ___ it.",o:["has seen","saw","had seen","would see"],a:2,e:"Present Perfect → Past Perfect (had seen)."},
+   {q:"Direct: \"I can swim.\" → She said she ___ swim.",o:["can","could","would","had"],a:1,e:"can → could."}
+ ]
+}
+];
+
+/* ============ TOEFL SIMULATION ============ */
+/* type 'mc' = completion ; type 'err' = error identification (parts[], a=index salah) */
+const TOEFL=[
+ {type:'mc',q:"By the time the fire truck arrived, the building ___ to the ground.",o:["burns","burned","had burned","has burned"],a:2,e:"Aksi selesai sebelum aksi lampau lain (arrived) → Past Perfect."},
+ {type:'err',parts:["Since 1990,","the company have","expanded","into twelve countries."],a:1,e:"'the company' tunggal → 'has expanded', bukan 'have'. Present Perfect dengan 'since'."},
+ {type:'mc',q:"She ___ in this office since she graduated from college.",o:["works","worked","has worked","is working"],a:2,e:"'since' + aksi berlanjut → Present Perfect."},
+ {type:'err',parts:["When I","will arrive","tomorrow, I will call you","immediately."],a:1,e:"Setelah 'when' (masa depan) pakai present: 'When I arrive', bukan 'will arrive'."},
+ {type:'mc',q:"If the government ___ action sooner, the crisis could have been avoided.",o:["takes","took","had taken","has taken"],a:2,e:"Conditional Type 3: If + past perfect, ... could have + V3."},
+ {type:'err',parts:["The scientists","were conducted","the experiment","last year."],a:1,e:"Aktif, bukan pasif → 'conducted', bukan 'were conducted'. Ilmuwan pelaku aksi."},
+ {type:'mc',q:"Look at the sky. It ___ to rain any minute now.",o:["will start","is going to start","starts","started"],a:1,e:"Bukti/tanda sekarang → be going to."},
+ {type:'err',parts:["By next June,","she will graduate","from the university","for four years."],a:1,e:"Durasi 'for four years' sampai titik masa depan → 'will have been studying'. 'will graduate' tidak menunjukkan durasi."},
+ {type:'mc',q:"I ___ television when the earthquake struck.",o:["watched","was watching","have watched","had watched"],a:1,e:"Aksi berlangsung diinterupsi aksi lampau pendek → Past Continuous."},
+ {type:'err',parts:["He said that","he will visit","us the following","week."],a:1,e:"Reported speech: 'will' → 'would'. Seharusnya 'he would visit'."},
+ {type:'mc',q:"Neither the manager nor the employees ___ satisfied with the decision.",o:["was","were","has been","is"],a:1,e:"Dengan 'neither...nor', verba menyesuaikan subjek terdekat (employees, jamak) → were."},
+ {type:'err',parts:["The report","must be submit","before the","deadline on Monday."],a:1,e:"Modal passive → 'must be submitted' (V3), bukan 'submit'."},
+ {type:'mc',q:"Water ___ into steam when it reaches 100 degrees Celsius.",o:["turned","turns","has turned","will turn"],a:1,e:"Fakta ilmiah → Present Simple."},
+ {type:'err',parts:["Yesterday I","have met","an old friend","at the mall."],a:1,e:"'Yesterday' = waktu spesifik → Past Simple 'met', bukan Present Perfect 'have met'."},
+ {type:'mc',q:"By 2050, renewable energy ___ most of the world's electricity, experts predict.",o:["will provide","provides","has provided","provided"],a:0,e:"Prediksi masa depan → will + V1 (Future Simple)."}
+];
+
+/* ============ ENGINE ============ */
+const $=s=>document.querySelector(s);
+let state={current:"home",done:{}};
+try{const s=localStorage.getItem("toefl_tense");if(s)state.done=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem("toefl_tense",JSON.stringify(state.done));}catch(e){}}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
+
+function renderNav(){
+  const groups=[["TENSES",TENSES],["LANJUTAN",ADVANCED]];
+  let html=`<ul class="navlist"><li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">🏠</span> Beranda & Peta</button></li></ul>`;
+  html+=`<div class="navgroup">12 Tenses</div><ul class="navlist">`;
+  TENSES.forEach(t=>{
+    html+=`<li><button class="${state.current==='t'+t.id?'active':''} ${state.done['t'+t.id]?'done':''}" data-go="t${t.id}">
+      <span class="num">${state.done['t'+t.id]?'✓':t.id}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</span></button></li>`;
+  });
+  html+=`</ul><div class="navgroup">Topik Lanjutan</div><ul class="navlist">`;
+  ADVANCED.forEach(a=>{
+    html+=`<li><button class="${state.current===a.id?'active':''} ${state.done[a.id]?'done':''}" data-go="${a.id}">
+      <span class="num">${state.done[a.id]?'✓':'★'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.name}</span></button></li>`;
+  });
+  html+=`</ul><div class="navgroup">Ujian</div><ul class="navlist">
+    <li><button class="${state.current==='toefl'?'active':''} ${state.done['toefl']?'done':''}" data-go="toefl"><span class="num">${state.done['toefl']?'✓':'📝'}</span> Simulasi TOEFL</button></li>
+    </ul>`;
+  $("#nav").innerHTML=html;
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.current=b.dataset.go;document.getElementById('sidebar').classList.remove('open');render();scrollTo(0,0);});
+  const total=TENSES.length+ADVANCED.length+1;
+  const dn=Object.keys(state.done).filter(k=>state.done[k]).length;
+  $("#progtext").textContent=`${dn} / ${total} modul selesai`;
+  $("#progfill").style.width=(dn/total*100)+"%";
+}
+
+function timelineHTML(t){
+  let markers="";
+  t.tl.forEach(m=>{
+    if(m.type==='point'){
+      markers+=`<div class="tl-x" style="left:${m.pos}%">✕</div>`;
+      if(m.l)markers+=`<div class="tl-label" style="left:${m.pos}%">${m.l}</div>`;
+    }else{
+      markers+=`<div class="tl-line" style="left:${m.from}%;width:${m.to-m.from}%"></div>`;
+      if(m.l)markers+=`<div class="tl-label" style="left:${(m.from+m.to)/2}%">${m.l}</div>`;
+    }
+  });
+  return `<div class="timeline"><div class="tl-bar">
+    <div class="tl-now" style="left:50%"></div>${markers}
+    <div class="tl-label" style="left:6%">masa lalu ⟵</div>
+    <div class="tl-label" style="left:94%">⟶ masa depan</div>
+  </div><p style="color:var(--muted);font-size:13px;text-align:center;margin-top:6px">${t.tlnote}</p></div>`;
+}
+
+function renderTense(t){
+  return `<div class="kicker">TENSE ${t.id} • ${t.group}</div>
+  <h2 class="title">${t.name} <span class="badge">${t.nameId}</span></h2>
+  <div class="section-title"><span class="ic">🧩</span> Rumus</div>
+  <div class="formula">
+    <div class="row"><span class="tag pos">(+)</span> <code>${t.formula.pos}</code></div>
+    <div class="row"><span class="tag neg">(−)</span> <code>${t.formula.neg}</code></div>
+    <div class="row"><span class="tag qst">(?)</span> <code>${t.formula.qst}</code></div>
+  </div>
+  <div class="section-title"><span class="ic">📊</span> Garis Waktu</div>
+  ${timelineHTML(t)}
+  <div class="section-title"><span class="ic">🎯</span> Kapan Dipakai</div>
+  <div class="usebox"><ul>${t.uses.map(u=>`<li>${u.u}<span class="ex">↳ ${u.ex}</span></li>`).join("")}</ul></div>
+  <div class="section-title"><span class="ic">🔑</span> Kata Penanda (Signal Words)</div>
+  <div class="signals">${t.signals.map(s=>`<span class="chip gold">${s}</span>`).join("")}</div>
+  <div class="section-title"><span class="ic">💬</span> Contoh</div>
+  <div class="exlist">${t.examples.map(e=>`<div class="exrow"><div><div class="en">${e.en}</div><div class="id">${e.id}</div></div><button class="say" onclick="speak('${e.en.replace(/'/g,"\\'")}')">🔊</button></div>`).join("")}</div>
+  <div class="section-title"><span class="ic">🗣️</span> Dialog Komunikatif</div>
+  <div class="toolbar"><button class="btn" onclick="toggleId(this)">🇮🇩 Terjemahan</button><button class="btn primary" onclick="playDlg('t${t.id}')">▶️ Putar</button></div>
+  <div class="dialogue" id="dlg">${t.dialogue.map((l,i)=>`<div class="line ${i%2?'b':'a'}"><div class="who">${i%2?'B':'A'}</div><div class="bubble"><div class="en"><span>${l.en}</span><button class="say" onclick="speak('${l.en.replace(/<[^>]+>/g,'').replace(/'/g,"\\'")}')">🔊</button></div><div class="id">${l.id}</div></div></div>`).join("")}</div>
+  <div class="section-title"><span class="ic">✍️</span> Latihan Isian (ketik jawaban)</div>
+  ${t.drill.map((d,i)=>drillHTML('t'+t.id,i,d)).join("")}
+  <div class="section-title"><span class="ic">✅</span> Kuis Cepat</div>
+  <div id="quizbox">${t.quiz.map((q,i)=>quizHTML('t'+t.id,i,q,t.quiz.length)).join("")}</div>
+  <div class="result" id="qresult"><div class="score" id="qscore"></div><div id="qmsg"></div></div>
+  ${pagerHTML('t'+t.id)}`;
+}
+
+function renderAdvanced(a){
+  return `<div class="kicker">TOPIK LANJUTAN</div>
+  <h2 class="title">${a.name} <span class="badge">${a.nameId}</span></h2>
+  ${a.body}
+  <div class="section-title"><span class="ic">✅</span> Latihan Gaya TOEFL</div>
+  <div id="quizbox">${a.quiz.map((q,i)=>quizHTML(a.id,i,q,a.quiz.length)).join("")}</div>
+  <div class="result" id="qresult"><div class="score" id="qscore"></div><div id="qmsg"></div></div>
+  ${pagerHTML(a.id)}`;
+}
+
+function drillHTML(uid,i,d){
+  return `<div class="drill" data-di="${i}">
+    <div class="dq">${d.q.replace(/___/,'<span class="blank">?</span>')}</div>
+    <input type="text" placeholder="ketik jawaban..." onkeydown="if(event.key==='Enter')checkDrill('${uid}',${i})">
+    <button class="btn primary" style="margin-left:8px" onclick="checkDrill('${uid}',${i})">Cek</button>
+    <span class="hint">💡 ${d.hint}</span>
+    <div class="fb"></div>
+  </div>`;
+}
+function checkDrill(uid,i){
+  const box=document.querySelector(`.drill[data-di="${i}"]`);
+  const inp=box.querySelector("input");
+  const fb=box.querySelector(".fb");
+  const data=(uid.startsWith('t')?TENSES.find(x=>'t'+x.id===uid):null).drill[i];
+  const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+  const accepted=data.a.map(x=>x.toLowerCase().replace(/\.\.\./g,' ').replace(/\s+/g,' '));
+  const ok=accepted.some(x=>x===val);
+  fb.className="fb show "+(ok?"ok":"no");
+  fb.innerHTML=ok?`✅ Benar! <b>${data.a[0]}</b>`:`❌ Belum tepat. Jawaban: <b>${data.a[0]}</b>`;
+  inp.style.borderColor=ok?"var(--good)":"var(--bad)";
+}
+
+function quizHTML(uid,i,q,total){
+  const isErr=q.type==='err';
+  let qtext;
+  if(isErr){ qtext=q.parts.map((p,j)=>`<u>(${String.fromCharCode(65+j)}) ${p}</u>`).join(" "); }
+  else{ qtext=q.q; }
+  const opts=isErr?q.parts.map((p,j)=>`(${String.fromCharCode(65+j)})`):q.o;
+  return `<div class="quiz-q" data-qi="${i}">
+    <div class="qnum">${isErr?'Error Identification':'Soal'} ${i+1}${total?' / '+total:''}</div>
+    <div class="qtext">${qtext}</div>
+    ${isErr?'<p style="color:var(--muted);font-size:13px;margin-bottom:6px">Pilih bagian yang salah:</p>':''}
+    ${opts.map((op,j)=>`<button class="opt" onclick="answer('${uid}',${i},${j})">${op}</button>`).join("")}
+    <div class="explain"></div>
+  </div>`;
+}
+
+const answered={};
+function getQuizArr(uid){
+  if(uid==='toefl')return TOEFL;
+  if(uid.startsWith('t'))return TENSES.find(x=>'t'+x.id===uid).quiz;
+  return ADVANCED.find(x=>x.id===uid).quiz;
+}
+function answer(uid,qi,ch){
+  const key=uid+"_"+qi;
+  if(answered[key]!==undefined)return;
+  const arr=getQuizArr(uid); const q=arr[qi]; answered[key]=ch;
+  const box=document.querySelectorAll(`#quizbox .quiz-q, #toeflbox .quiz-q`)[0]; // fallback
+  const boxes=document.querySelectorAll(`.quiz-q[data-qi="${qi}"]`);
+  const b=boxes[boxes.length-1];
+  const opts=b.querySelectorAll(".opt");
+  opts.forEach((o,j)=>{o.classList.add("disabled");if(j===q.a)o.classList.add("correct");if(j===ch&&ch!==q.a)o.classList.add("wrong");});
+  const ex=b.querySelector(".explain");
+  ex.innerHTML=(ch===q.a?"✅ Benar! ":"❌ Kurang tepat. ")+q.e;
+  ex.classList.add("show");
+  // result
+  const answeredCount=Object.keys(answered).filter(k=>k.startsWith(uid+"_")).length;
+  if(answeredCount===arr.length){
+    let correct=0;arr.forEach((qq,j)=>{if(answered[uid+"_"+j]===qq.a)correct++;});
+    const pct=Math.round(correct/arr.length*100);
+    const res=uid==='toefl'?$("#tresult"):$("#qresult");
+    if(res){res.classList.add("show");
+      (uid==='toefl'?$("#tscore"):$("#qscore")).textContent=`${correct}/${arr.length} (${pct}%)`;
+      const msg=uid==='toefl'?$("#tmsg"):$("#qmsg");
+      msg.innerHTML=pct>=85?"🎉 Luar biasa! Level TOEFL. Lanjutkan!":pct>=60?"👍 Bagus, tinjau soal yang salah.":"💪 Ulangi materi tense terkait.";
+      res.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
+    if(uid!=='home'){state.done[uid]=true;save();renderNav();}
+  }
+}
+
+function pagerHTML(uid){
+  const order=[...TENSES.map(t=>'t'+t.id),...ADVANCED.map(a=>a.id),'toefl'];
+  const idx=order.indexOf(uid);
+  const prev=idx>0?order[idx-1]:null, next=idx<order.length-1?order[idx+1]:null;
+  return `<div class="pager">
+    <button class="btn" ${prev?`onclick="go('${prev}')"`:'disabled style="opacity:.4"'}>← Sebelumnya</button>
+    <button class="btn markdone" onclick="markDone('${uid}')">${state.done[uid]?'✓ Selesai':'✓ Tandai selesai'}</button>
+    <button class="btn" ${next?`onclick="go('${next}')"`:'disabled style="opacity:.4"'}>Berikutnya →</button>
+  </div>`;
+}
+function go(id){state.current=id;render();scrollTo(0,0);}
+function markDone(id){state.done[id]=true;save();renderNav();render();scrollTo(0,0);}
+function toggleId(btn){const d=$("#dlg");d.classList.toggle("show-id");btn.textContent=d.classList.contains("show-id")?"🇮🇩 Sembunyikan":"🇮🇩 Terjemahan";}
+function playDlg(uid){const t=TENSES.find(x=>'t'+x.id===uid);let i=0;function nx(){if(i>=t.dialogue.length)return;const u=new SpeechSynthesisUtterance(t.dialogue[i].en.replace(/<[^>]+>/g,''));u.lang="en-US";u.rate=.9;u.onend=()=>{i++;nx();};speechSynthesis.speak(u);}speechSynthesis.cancel();nx();}
+
+/* TOEFL simulation with timer */
+let timerInt=null,timeLeft=0;
+function renderToefl(){
+  return `<div class="kicker">SIMULASI UJIAN</div>
+  <h2 class="title">TOEFL-Style: Structure & Written Expression</h2>
+  <p class="subtitle">15 soal gaya TOEFL — Sentence Completion & Error Identification. Fokus penguasaan tense.</p>
+  <div class="timerbar"><div>⏱️ Waktu tersisa <span style="color:var(--muted);font-size:12px">(disarankan 12 menit)</span></div><div class="clock" id="clock">12:00</div></div>
+  <div class="tip"><b>Petunjuk:</b> Untuk <b>Completion</b>, pilih kata/frasa yang melengkapi kalimat. Untuk <b>Error Identification</b>, pilih bagian bergaris (A–D) yang secara tata bahasa <b>salah</b>.</div>
+  <div id="toeflbox">${TOEFL.map((q,i)=>quizHTML('toefl',i,q,TOEFL.length)).join("")}</div>
+  <div class="result" id="tresult"><div class="score" id="tscore"></div><div id="tmsg"></div></div>
+  <div style="text-align:center;margin-top:10px"><button class="btn" onclick="resetToefl()">🔄 Ulangi simulasi</button></div>
+  ${pagerHTML('toefl')}`;
+}
+function startTimer(){
+  clearInterval(timerInt);timeLeft=12*60;
+  timerInt=setInterval(()=>{
+    timeLeft--;const c=$("#clock");if(!c){clearInterval(timerInt);return;}
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    c.textContent=`${m}:${s<10?'0':''}${s}`;
+    if(timeLeft<=60)c.style.color="var(--bad)";
+    if(timeLeft<=0){clearInterval(timerInt);c.textContent="Waktu habis!";}
+  },1000);
+}
+function resetToefl(){Object.keys(answered).forEach(k=>{if(k.startsWith('toefl_'))delete answered[k];});render();scrollTo(0,0);}
+
+function renderHome(){
+  const mapCells=(arr)=>arr.map(t=>`<div class="mapcell" onclick="go('t${t.id}')"><div class="t">${t.id}. ${t.name}</div><div class="f">${t.formula.pos.split('|')[0].trim()}</div></div>`).join("");
+  const dn=Object.keys(state.done).filter(k=>state.done[k]).length;
+  const total=TENSES.length+ADVANCED.length+1;
+  return `<div class="hero"><h2>Kuasai 12 Tenses sampai Level TOEFL 🎓</h2>
+    <p>Modul terfokus untuk membangun penguasaan tense dari nol sampai siap ujian. Tiap tense dilengkapi rumus, garis waktu visual, contoh + audio, dialog komunikatif, latihan ketik-isian, dan kuis. Ditutup dengan simulasi soal bergaya TOEFL berskor & bertimer.</p></div>
+  <div class="feat-grid">
+    <div class="feat"><div class="ic">🧩</div><h4>Rumus + Timeline</h4><p>Pahami struktur & kapan tiap tense dipakai lewat garis waktu visual.</p></div>
+    <div class="feat"><div class="ic">✍️</div><h4>Drill Ketik-Isian</h4><p>Ketik jawaban & dapat koreksi instan — bukan sekadar pilihan ganda.</p></div>
+    <div class="feat"><div class="ic">🗣️</div><h4>Dialog + Audio</h4><p>Contoh komunikatif dengan tombol dengar pengucapan.</p></div>
+    <div class="feat"><div class="ic">📝</div><h4>Simulasi TOEFL</h4><p>15 soal Structure & Written Expression, berskor & bertimer.</p></div>
+  </div>
+  <div class="section-title"><span class="ic">🗺️</span> Peta 12 Tenses</div>
+  <div class="mapgrid">
+    <div class="maphdr">⏮ PRESENT</div>${mapCells(TENSES.filter(t=>t.group==='PRESENT'))}
+    <div class="maphdr">⏪ PAST</div>${mapCells(TENSES.filter(t=>t.group==='PAST'))}
+    <div class="maphdr">⏩ FUTURE</div>${mapCells(TENSES.filter(t=>t.group==='FUTURE'))}
+  </div>
+  <div class="section-title"><span class="ic">★</span> Topik Lanjutan (Jebakan TOEFL)</div>
+  <div class="mapgrid">${ADVANCED.map(a=>`<div class="mapcell" onclick="go('${a.id}')"><div class="t">${a.name}</div><div class="f">${a.nameId}</div></div>`).join("")}</div>
+  <div class="pager"><button class="btn primary" style="flex:1;padding:15px;font-size:15px" onclick="go('t1')">Mulai → Tense 1: Present Simple</button>
+  <button class="btn" style="flex:1;padding:15px;font-size:15px" onclick="go('toefl')">Langsung ke Simulasi TOEFL 📝</button></div>
+  <p style="text-align:center;color:var(--muted);margin-top:16px;font-size:13px">Progres: ${dn}/${total} modul • Saran alur: pelajari 12 tenses berurutan → topik lanjutan → simulasi TOEFL.</p>`;
+}
+
+function render(){
+  clearInterval(timerInt);
+  renderNav();
+  const m=$("#main");
+  if(state.current==="home"){m.innerHTML=renderHome();return;}
+  if(state.current==="toefl"){m.innerHTML=renderToefl();startTimer();return;}
+  if(state.current.startsWith("t")&&/^t\d+$/.test(state.current)){
+    m.innerHTML=renderTense(TENSES.find(x=>'t'+x.id===state.current));return;
+  }
+  const a=ADVANCED.find(x=>x.id===state.current);
+  if(a){m.innerHTML=renderAdvanced(a);return;}
+  m.innerHTML=renderHome();
+}
+window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;
+render();
+</script>
+</body>
+</html>
