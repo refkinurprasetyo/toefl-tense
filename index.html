@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOEFL Tense Mastery — Kuasai 12 Tenses sampai Level Ujian</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
   --bg:#0b0f24; --bg2:#12183a; --card:#181f47; --card2:#212a5c; --card3:#2b356e;
@@ -149,9 +153,64 @@ h2.title{font-size:29px;margin:2px 0 4px}
   .mobtop button{background:var(--card2);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:9px;font-size:18px;cursor:pointer}
   h2.title{font-size:23px}
 }
+/* ===== AUTH / TOPBAR / DASHBOARD ===== */
+body.pre-auth #sidebar,body.pre-auth #wrap{display:none!important}
+#authgate{display:none;position:fixed;inset:0;z-index:100;overflow:auto;
+  background:radial-gradient(900px 500px at 80% -10%,#2a2f78 0%,transparent 55%),var(--bg);
+  align-items:center;justify-content:center;padding:24px}
+body.pre-auth #authgate{display:flex}
+.authcard{width:100%;max-width:430px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px 30px}
+.authcard .logo{width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;margin-bottom:14px}
+.authcard h2{font-size:23px}
+.authcard p.sub{color:var(--muted);font-size:14px;margin:4px 0 20px}
+.authcard label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px;font-weight:600}
+.authcard input{width:100%;background:#0c1130;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:11px;font-size:15px}
+.authcard input:focus{outline:none;border-color:var(--accent)}
+.authcard .bigbtn{width:100%;margin-top:20px;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.authcard .bigbtn:hover{filter:brightness(1.08)}
+.authcard .err{color:var(--bad);font-size:13.5px;margin-top:12px;min-height:18px}
+.authcard .demo{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.authcard .demo b{color:var(--gold)}
+.authcard .demo .acc{background:#0c1130;border:1px solid var(--line);border-radius:9px;padding:7px 11px;margin:6px 0;display:flex;justify-content:space-between;cursor:pointer}
+.authcard .demo .acc:hover{border-color:var(--accent)}
+.authcard .demo .acc code{color:var(--teal)}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar .sp{flex:1}
+.topbar .uname{font-weight:700;font-size:14px}
+.topbar .rolechip{font-size:11px;padding:2px 9px;border-radius:99px;margin-left:7px}
+.rolechip.student{background:rgba(46,230,166,.16);color:var(--good)}
+.rolechip.teacher{background:rgba(255,126,182,.16);color:var(--pink)}
+.topbar button{background:var(--card2);border:1px solid var(--line);color:var(--text);padding:7px 13px;border-radius:9px;font-size:13px;cursor:pointer}
+.topbar button:hover{border-color:var(--accent)}
+.topbar .mob{display:none}
+/* dashboard */
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.stat .big{font-size:30px;font-weight:800;color:var(--gold)}
+.stat .lab{color:var(--muted);font-size:13px;margin-top:2px}
+.ring{--p:0;width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--teal) calc(var(--p)*1%),#0c1130 0);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.ring .inner{width:92px;height:92px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .inner b{font-size:26px}
+.ring .inner span{font-size:11px;color:var(--muted)}
+.chartbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.chartbox h3{font-size:15px;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin:6px 0}
+.badge2{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:13px;display:flex;align-items:center;gap:8px}
+.badge2.on{border-color:var(--gold);background:linear-gradient(90deg,rgba(255,209,102,.14),transparent)}
+.badge2.off{opacity:.45}
+.dtable{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.dtable th,.dtable td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line)}
+.dtable th{background:var(--card2);color:var(--gold);font-size:12.5px}
+.dtable tr:last-child td{border-bottom:none}
+.dtable .barmini{height:7px;background:#0c1130;border-radius:99px;overflow:hidden;min-width:70px}
+.dtable .barmini>i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--accent))}
+.dtable .rowbtn{color:var(--accent);cursor:pointer;font-weight:600}
+.dtable .rowbtn:hover{text-decoration:underline}
+@media(max-width:860px){.topbar .mob{display:inline-block}}
 </style>
 </head>
-<body>
+<body class="pre-auth">
+<div id="authgate"><div class="authcard" id="authcard"></div></div>
 <aside id="sidebar">
   <div class="brand">
     <div class="logo">T</div>
@@ -162,7 +221,12 @@ h2.title{font-size:29px;margin:2px 0 4px}
   <div id="nav"></div>
 </aside>
 <div id="wrap">
-  <div class="mobtop"><button onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button><b>TOEFL Tense Mastery</b></div>
+  <div class="topbar">
+    <button class="mob" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <span class="uname" id="tbname">—</span><span class="rolechip" id="tbrole"></span>
+    <span class="sp"></span>
+    <button onclick="doLogout()">Keluar</button>
+  </div>
   <main id="main"></main>
 </div>
 <script>
@@ -640,16 +704,38 @@ const TOEFL=[
  {type:'mc',q:"By 2050, renewable energy ___ most of the world's electricity, experts predict.",o:["will provide","provides","has provided","provided"],a:0,e:"Prediksi masa depan → will + V1 (Future Simple)."}
 ];
 
+/* ============ FIREBASE CONFIG ============ */
+/* Ganti nilai di bawah dengan config proyek Firebase Anda (Project settings → Your apps → Web). */
+const firebaseConfig = {
+  apiKey: "AIzaSyC3oWPuRei1Uv-Ht9cb5B1v3fS419ZlJO4",
+  authDomain: "toefl-tense-mastery.firebaseapp.com",
+  projectId: "toefl-tense-mastery",
+  storageBucket: "toefl-tense-mastery.firebasestorage.app",
+  messagingSenderId: "1011275165931",
+  appId: "1:1011275165931:web:faa5b1afd50807f9128eae"
+};
+
 /* ============ ENGINE ============ */
 const $=s=>document.querySelector(s);
-let state={current:"home",done:{}};
-try{const s=localStorage.getItem("toefl_tense");if(s)state.done=JSON.parse(s);}catch(e){}
-function save(){try{localStorage.setItem("toefl_tense",JSON.stringify(state.done));}catch(e){}}
+let CU=null, PROFILE=null, db=null, auth=null, STUDENTS=[];
+let state={current:"home",done:{},scores:{},drills:{}};
+function cacheKey(){return "toefl_tense_"+(CU?CU.uid:"anon");}
+function save(){
+  try{localStorage.setItem(cacheKey(),JSON.stringify({done:state.done,scores:state.scores,drills:state.drills}));}catch(e){}
+  if(CU&&db){
+    db.collection("users").doc(CU.uid).set(
+      {done:state.done,scores:state.scores,drills:state.drills,lastActive:Date.now()},{merge:true}
+    ).catch(e=>console.warn("sync gagal",e));
+  }
+}
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
 
 function renderNav(){
-  const groups=[["TENSES",TENSES],["LANJUTAN",ADVANCED]];
-  let html=`<ul class="navlist"><li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">🏠</span> Beranda & Peta</button></li></ul>`;
+  if(PROFILE&&PROFILE.role==='teacher'){ renderTeacherNav(); return; }
+  let html=`<ul class="navlist">
+    <li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">🏠</span> Beranda & Peta</button></li>
+    <li><button class="${state.current==='achievements'?'active':''}" data-go="achievements"><span class="num">🏆</span> Pencapaian Saya</button></li>
+  </ul>`;
   html+=`<div class="navgroup">12 Tenses</div><ul class="navlist">`;
   TENSES.forEach(t=>{
     html+=`<li><button class="${state.current==='t'+t.id?'active':''} ${state.done['t'+t.id]?'done':''}" data-go="t${t.id}">
@@ -747,6 +833,10 @@ function checkDrill(uid,i){
   fb.className="fb show "+(ok?"ok":"no");
   fb.innerHTML=ok?`✅ Benar! <b>${data.a[0]}</b>`:`❌ Belum tepat. Jawaban: <b>${data.a[0]}</b>`;
   inp.style.borderColor=ok?"var(--good)":"var(--bad)";
+  const t=TENSES.find(x=>'t'+x.id===uid);
+  if(!state.drills[uid])state.drills[uid]={correct:{},total:t?t.drill.length:0};
+  if(ok)state.drills[uid].correct[i]=true; else delete state.drills[uid].correct[i];
+  save();
 }
 
 function quizHTML(uid,i,q,total){
@@ -794,7 +884,9 @@ function answer(uid,qi,ch){
       msg.innerHTML=pct>=85?"🎉 Luar biasa! Level TOEFL. Lanjutkan!":pct>=60?"👍 Bagus, tinjau soal yang salah.":"💪 Ulangi materi tense terkait.";
       res.scrollIntoView({behavior:"smooth",block:"nearest"});
     }
-    if(uid!=='home'){state.done[uid]=true;save();renderNav();}
+    state.scores[uid]={correct,total:arr.length,ts:Date.now()};
+    if(uid!=='home'){state.done[uid]=true;}
+    save();renderNav();
   }
 }
 
@@ -864,9 +956,14 @@ function renderHome(){
 }
 
 function render(){
-  clearInterval(timerInt);
+  clearInterval(timerInt);destroyCharts();
   renderNav();
   const m=$("#main");
+  if(PROFILE&&PROFILE.role==='teacher'){
+    if(state.current==='teacher'){renderTeacher();return;}
+    if(state.current.startsWith('stu:')){renderStudentDetail(state.current.slice(4));return;}
+  }
+  if(state.current==="achievements"){m.innerHTML=renderAchievements();drawAchievementCharts();return;}
   if(state.current==="home"){m.innerHTML=renderHome();return;}
   if(state.current==="toefl"){m.innerHTML=renderToefl();startTimer();return;}
   if(state.current.startsWith("t")&&/^t\d+$/.test(state.current)){
@@ -876,8 +973,238 @@ function render(){
   if(a){m.innerHTML=renderAdvanced(a);return;}
   m.innerHTML=renderHome();
 }
-window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;
-render();
+
+/* ============ STATS HELPERS ============ */
+function allModuleKeys(){return [...TENSES.map(t=>'t'+t.id),...ADVANCED.map(a=>a.id),'toefl'];}
+function moduleName(k){
+  if(k==='toefl')return 'Simulasi TOEFL';
+  if(/^t\d+$/.test(k)){const t=TENSES.find(x=>'t'+x.id===k);return t?t.name:k;}
+  const a=ADVANCED.find(x=>x.id===k);return a?a.name:k;
+}
+function computeStats(st){
+  st=st||{};const done=st.done||{},scores=st.scores||{},drills=st.drills||{};
+  const keys=allModuleKeys();const total=keys.length;
+  const completed=keys.filter(k=>done[k]).length;
+  let sum=0,n=0;const per=[];
+  keys.forEach(k=>{const s=scores[k];const pct=(s&&s.total)?Math.round(s.correct/s.total*100):null;if(pct!==null){sum+=pct;n++;}per.push({key:k,name:moduleName(k),pct});});
+  let dC=0,dT=0;Object.keys(drills).forEach(k=>{const d=drills[k];dC+=Object.keys(d.correct||{}).length;dT+=d.total||0;});
+  const toefl=scores['toefl']?Math.round(scores['toefl'].correct/scores['toefl'].total*100):null;
+  return {total,completed,pct:Math.round(completed/total*100),avg:n?Math.round(sum/n):0,quizzesDone:n,per,toefl,drillCorrect:dC,drillTotal:dT};
+}
+
+/* ============ CHART MGMT ============ */
+let chartRefs=[];
+function destroyCharts(){chartRefs.forEach(c=>{try{c.destroy();}catch(e){}});chartRefs=[];}
+const CO={teal:'#22d3c5',accent:'#4f7cff',accent2:'#8a5cff',gold:'#ffd166',pink:'#ff7eb6',good:'#2ee6a6',line:'#2e3872',muted:'#96a0d4'};
+function chartOpts(extra){return Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:CO.muted}}},scales:{x:{ticks:{color:CO.muted,font:{size:10}},grid:{color:CO.line}},y:{beginAtZero:true,max:100,ticks:{color:CO.muted},grid:{color:CO.line}}}},extra||{});}
+
+/* ============ STUDENT: ACHIEVEMENTS ============ */
+function renderAchievements(){
+  const s=computeStats(state);
+  const badges=[
+    {on:TENSES.filter(t=>t.group==='PRESENT').every(t=>state.done['t'+t.id]),ic:'⏮',t:'Present Master'},
+    {on:TENSES.filter(t=>t.group==='PAST').every(t=>state.done['t'+t.id]),ic:'⏪',t:'Past Master'},
+    {on:TENSES.filter(t=>t.group==='FUTURE').every(t=>state.done['t'+t.id]),ic:'⏩',t:'Future Master'},
+    {on:ADVANCED.every(a=>state.done[a.id]),ic:'★',t:'Advanced Grammar'},
+    {on:!!state.done['toefl'],ic:'📝',t:'TOEFL Finisher'},
+    {on:s.toefl!==null&&s.toefl>=85,ic:'🎯',t:'TOEFL 85%+'}
+  ];
+  return `<div class="kicker">DASHBOARD SISWA</div>
+  <h2 class="title">🏆 Pencapaian ${PROFILE?PROFILE.name:''}</h2>
+  <p class="subtitle">Pantau progres, skor kuis, dan lencana Anda. Semua tersimpan otomatis lintas perangkat.</p>
+  <div class="statgrid">
+    <div class="stat"><div style="display:flex;gap:16px;align-items:center">
+      <div class="ring" style="--p:${s.pct}"><div class="inner"><b>${s.pct}%</b><span>selesai</span></div></div>
+      <div><div class="big">${s.completed}/${s.total}</div><div class="lab">modul selesai</div></div>
+    </div></div>
+    <div class="stat"><div class="big">${s.avg}%</div><div class="lab">rata-rata skor kuis (${s.quizzesDone} kuis)</div></div>
+    <div class="stat"><div class="big">${s.toefl!==null?s.toefl+'%':'—'}</div><div class="lab">skor simulasi TOEFL</div></div>
+    <div class="stat"><div class="big">${s.drillCorrect}/${s.drillTotal||0}</div><div class="lab">latihan isian benar</div></div>
+  </div>
+  <div class="chartbox"><h3>📊 Skor kuis per modul</h3>
+    <div style="height:260px"><canvas id="achChart"></canvas></div>
+    <p style="color:var(--muted);font-size:12px;margin-top:8px">Hanya modul yang kuisnya sudah dikerjakan yang tampil.</p>
+  </div>
+  <div class="section-title"><span class="ic">🎖️</span> Lencana</div>
+  <div class="badges">${badges.map(b=>`<div class="badge2 ${b.on?'on':'off'}">${b.ic} ${b.t} ${b.on?'✓':''}</div>`).join('')}</div>
+  <div class="pager"><button class="btn primary" style="flex:1;padding:14px" onclick="go('home')">← Kembali ke materi</button></div>`;
+}
+function drawAchievementCharts(){
+  const s=computeStats(state);const done=s.per.filter(p=>p.pct!==null);
+  const el=document.getElementById('achChart');if(!el||!window.Chart)return;
+  if(!done.length){el.parentElement.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px">Belum ada kuis dikerjakan. Mulai belajar untuk melihat grafik!</p>';return;}
+  chartRefs.push(new Chart(el,{type:'bar',data:{labels:done.map(p=>p.name),datasets:[{label:'Skor (%)',data:done.map(p=>p.pct),backgroundColor:CO.teal,borderRadius:6}]},options:chartOpts()}));
+}
+
+/* ============ TEACHER: NAV + DASHBOARD ============ */
+function renderTeacherNav(){
+  let html=`<ul class="navlist"><li><button class="${state.current==='teacher'?'active':''}" data-go="teacher"><span class="num">📊</span> Dashboard</button></li></ul>`;
+  html+=`<div class="navgroup">Siswa (${STUDENTS.length})</div><ul class="navlist">`;
+  STUDENTS.forEach(s=>{html+=`<li><button class="${state.current==='stu:'+s.uid?'active':''}" data-go="stu:${s.uid}"><span class="num">👤</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name||s.email}</span></button></li>`;});
+  html+=`</ul><div class="navgroup">Materi</div><ul class="navlist"><li><button class="${state.current==='home'?'active':''}" data-go="home"><span class="num">📚</span> Lihat Materi</button></li></ul>`;
+  $("#nav").innerHTML=html;
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{state.current=b.dataset.go;document.getElementById('sidebar').classList.remove('open');render();scrollTo(0,0);});
+  $("#progtext").textContent=`${STUDENTS.length} siswa terpantau`;
+  $("#progfill").style.width=(STUDENTS.length?100:0)+"%";
+}
+async function loadStudents(){
+  STUDENTS=[];
+  try{
+    const snap=await db.collection("users").where("role","==","student").get();
+    snap.forEach(d=>STUDENTS.push(Object.assign({uid:d.id},d.data())));
+    STUDENTS.sort((a,b)=>(a.name||a.email||'').localeCompare(b.name||b.email||''));
+  }catch(e){console.warn("loadStudents",e);}
+}
+async function renderTeacher(){
+  const m=$("#main");
+  m.innerHTML=`<div class="kicker">DASHBOARD GURU</div><h2 class="title">📊 Progres Kelas</h2><p class="subtitle">Memuat data siswa…</p>`;
+  await loadStudents();renderTeacherNav();
+  const rows=STUDENTS.map(s=>({s,st:computeStats(s)}));
+  if(!rows.length){m.innerHTML=`<div class="kicker">DASHBOARD GURU</div><h2 class="title">📊 Progres Kelas</h2><div class="tip">Belum ada siswa terdaftar. Minta siswa login memakai akun contoh, atau buat akun baru.</div>`;return;}
+  const cls={avgPct:Math.round(rows.reduce((a,r)=>a+r.st.pct,0)/rows.length),avgScore:Math.round(rows.reduce((a,r)=>a+r.st.avg,0)/rows.length),
+    toefl:(()=>{const t=rows.filter(r=>r.st.toefl!==null);return t.length?Math.round(t.reduce((a,r)=>a+r.st.toefl,0)/t.length):null;})()};
+  m.innerHTML=`<div class="kicker">DASHBOARD GURU</div>
+  <h2 class="title">📊 Progres Kelas</h2>
+  <p class="subtitle">${rows.length} siswa • rata-rata penyelesaian & skor di bawah. Klik nama siswa untuk detail.</p>
+  <div class="statgrid">
+    <div class="stat"><div class="big">${rows.length}</div><div class="lab">jumlah siswa</div></div>
+    <div class="stat"><div class="big">${cls.avgPct}%</div><div class="lab">rata-rata penyelesaian</div></div>
+    <div class="stat"><div class="big">${cls.avgScore}%</div><div class="lab">rata-rata skor kuis</div></div>
+    <div class="stat"><div class="big">${cls.toefl!==null?cls.toefl+'%':'—'}</div><div class="lab">rata-rata TOEFL</div></div>
+  </div>
+  <div class="chartbox"><h3>📈 Perbandingan siswa</h3>
+    <div style="height:300px"><canvas id="cmpChart"></canvas></div>
+  </div>
+  <div class="section-title"><span class="ic">👥</span> Tabel Statistik</div>
+  <table class="dtable"><thead><tr><th>Siswa</th><th>Selesai</th><th>Progres</th><th>Rata Skor</th><th>TOEFL</th><th>Drill</th><th></th></tr></thead><tbody>
+  ${rows.map(r=>`<tr>
+    <td><b>${r.s.name||r.s.email}</b><br><span style="color:var(--muted);font-size:11px">${r.s.email||''}</span></td>
+    <td>${r.st.completed}/${r.st.total}</td>
+    <td><div class="barmini"><i style="width:${r.st.pct}%"></i></div></td>
+    <td>${r.st.quizzesDone?r.st.avg+'%':'—'}</td>
+    <td>${r.st.toefl!==null?r.st.toefl+'%':'—'}</td>
+    <td>${r.st.drillCorrect}/${r.st.drillTotal||0}</td>
+    <td><span class="rowbtn" onclick="go('stu:${r.s.uid}')">Detail →</span></td>
+  </tr>`).join('')}
+  </tbody></table>
+  <div style="margin-top:14px"><button class="btn" onclick="render()">🔄 Muat ulang data</button></div>`;
+  const el=document.getElementById('cmpChart');
+  if(el&&window.Chart){
+    chartRefs.push(new Chart(el,{type:'bar',data:{labels:rows.map(r=>r.s.name||r.s.email),datasets:[
+      {label:'Penyelesaian (%)',data:rows.map(r=>r.st.pct),backgroundColor:CO.accent,borderRadius:5},
+      {label:'Rata skor kuis (%)',data:rows.map(r=>r.st.avg),backgroundColor:CO.teal,borderRadius:5},
+      {label:'TOEFL (%)',data:rows.map(r=>r.st.toefl!==null?r.st.toefl:0),backgroundColor:CO.pink,borderRadius:5}
+    ]},options:chartOpts()}));
+  }
+}
+function renderStudentDetail(uid){
+  const m=$("#main");const s=STUDENTS.find(x=>x.uid===uid);
+  if(!s){m.innerHTML='<p>Siswa tidak ditemukan.</p>';return;}
+  const st=computeStats(s);const done=st.per.filter(p=>p.pct!==null);
+  m.innerHTML=`<div class="kicker">DETAIL SISWA</div>
+  <h2 class="title">👤 ${s.name||s.email}</h2>
+  <p class="subtitle">${s.email||''} • terakhir aktif: ${s.lastActive?new Date(s.lastActive).toLocaleString('id-ID'):'—'}</p>
+  <div class="statgrid">
+    <div class="stat"><div class="big">${st.pct}%</div><div class="lab">penyelesaian (${st.completed}/${st.total})</div></div>
+    <div class="stat"><div class="big">${st.quizzesDone?st.avg+'%':'—'}</div><div class="lab">rata-rata skor kuis</div></div>
+    <div class="stat"><div class="big">${st.toefl!==null?st.toefl+'%':'—'}</div><div class="lab">skor TOEFL</div></div>
+    <div class="stat"><div class="big">${st.drillCorrect}/${st.drillTotal||0}</div><div class="lab">latihan isian benar</div></div>
+  </div>
+  <div class="chartbox"><h3>📊 Skor kuis per modul</h3><div style="height:300px"><canvas id="stuChart"></canvas></div></div>
+  <div class="pager"><button class="btn" style="flex:1;padding:14px" onclick="go('teacher')">← Kembali ke dashboard</button></div>`;
+  const el=document.getElementById('stuChart');
+  if(el&&window.Chart){
+    if(!done.length){el.parentElement.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px">Siswa ini belum mengerjakan kuis.</p>';}
+    else chartRefs.push(new Chart(el,{type:'bar',data:{labels:done.map(p=>p.name),datasets:[{label:'Skor (%)',data:done.map(p=>p.pct),backgroundColor:CO.pink,borderRadius:6}]},options:chartOpts()}));
+  }
+}
+
+/* ============ AUTH ============ */
+function loginScreen(msg){
+  document.body.classList.add('pre-auth');
+  $("#authcard").innerHTML=`
+    <div class="logo">T</div>
+    <h2>Masuk</h2>
+    <p class="sub">TOEFL Tense Mastery — login siswa atau guru</p>
+    <label>Email</label><input id="li_email" type="email" placeholder="nama@contoh.com" autocomplete="username">
+    <label>Password</label><input id="li_pw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="bigbtn" onclick="doLogin()">Masuk</button>
+    <div class="err" id="li_err">${msg||''}</div>
+    <div class="demo">
+      <b>Akun contoh</b> (klik untuk mengisi):
+      <div class="acc" onclick="fillLogin('guru@demo.com','guru12345')"><span>👩‍🏫 Guru</span><code>guru@demo.com</code></div>
+      <div class="acc" onclick="fillLogin('siswa1@demo.com','siswa12345')"><span>👨‍🎓 Siswa 1</span><code>siswa1@demo.com</code></div>
+      <div class="acc" onclick="fillLogin('siswa2@demo.com','siswa12345')"><span>👩‍🎓 Siswa 2</span><code>siswa2@demo.com</code></div>
+      <div class="acc" onclick="fillLogin('siswa3@demo.com','siswa12345')"><span>🧑‍🎓 Siswa 3</span><code>siswa3@demo.com</code></div>
+    </div>`;
+}
+function fillLogin(e,p){$("#li_email").value=e;$("#li_pw").value=p;}
+function doLogin(){
+  const e=$("#li_email").value.trim(),p=$("#li_pw").value;
+  if(!e||!p){$("#li_err").textContent="Isi email dan password.";return;}
+  $("#li_err").textContent="Memproses…";
+  auth.signInWithEmailAndPassword(e,p).catch(err=>{
+    const map={'auth/invalid-credential':'Email atau password salah.','auth/user-not-found':'Akun tidak ditemukan.','auth/wrong-password':'Password salah.','auth/invalid-email':'Format email tidak valid.','auth/too-many-requests':'Terlalu banyak percobaan. Coba lagi nanti.'};
+    $("#li_err").textContent=map[err.code]||('Gagal masuk: '+err.message);
+  });
+}
+function doLogout(){if(auth)auth.signOut().then(()=>location.reload());}
+async function onLogin(user){
+  CU=user;
+  try{const s=localStorage.getItem(cacheKey());if(s){const c=JSON.parse(s);state.done=c.done||{};state.scores=c.scores||{};state.drills=c.drills||{};}}catch(e){}
+  let role='student',name=user.email;
+  try{
+    const doc=await db.collection("users").doc(user.uid).get();
+    if(doc.exists){const d=doc.data();role=d.role||'student';name=d.name||user.email;
+      state.done=d.done||state.done;state.scores=d.scores||state.scores;state.drills=d.drills||state.drills;}
+    else{await db.collection("users").doc(user.uid).set({name:user.email,email:user.email,role:'student',createdAt:Date.now()},{merge:true});}
+  }catch(e){console.warn("profil",e);}
+  PROFILE={name,email:user.email,role};
+  if(role==='teacher')await loadStudents();
+  document.body.classList.remove('pre-auth');
+  $("#tbname").textContent=name;
+  $("#tbrole").textContent=role==='teacher'?'Guru':'Siswa';
+  $("#tbrole").className="rolechip "+(role==='teacher'?'teacher':'student');
+  state.current=role==='teacher'?'teacher':'home';
+  render();
+}
+/* seeding akun contoh (dipanggil manual via console: seedDemo()) */
+async function seedDemo(){
+  const accts=[
+    {email:'guru@demo.com',pw:'guru12345',name:'Bu Sartika (Guru)',role:'teacher'},
+    {email:'siswa1@demo.com',pw:'siswa12345',name:'Andi Pratama',role:'student'},
+    {email:'siswa2@demo.com',pw:'siswa12345',name:'Bina Lestari',role:'student'},
+    {email:'siswa3@demo.com',pw:'siswa12345',name:'Citra Dewi',role:'student'}
+  ];
+  const sec=firebase.initializeApp(firebaseConfig,'seed'+Date.now());
+  let made=0,exist=0;
+  for(const a of accts){
+    try{
+      const cred=await sec.auth().createUserWithEmailAndPassword(a.email,a.pw);
+      await sec.firestore().collection("users").doc(cred.user.uid).set({name:a.name,email:a.email,role:a.role,createdAt:Date.now(),done:{},scores:{},drills:{}},{merge:true});
+      await sec.auth().signOut();made++;
+    }catch(e){if(e.code==='auth/email-already-in-use')exist++;else console.warn('seed',a.email,e.message);}
+  }
+  try{await sec.delete();}catch(e){}
+  const msg=`Selesai. Dibuat: ${made} akun baru, ${exist} sudah ada.`;
+  console.log(msg);alert(msg);
+}
+window.seedDemo=seedDemo;
+
+/* ============ BOOTSTRAP ============ */
+function initApp(){
+  if(!firebaseConfig.apiKey||firebaseConfig.apiKey.indexOf('PASTE')===0){
+    document.body.classList.add('pre-auth');
+    $("#authcard").innerHTML='<div class="logo">T</div><h2>Konfigurasi diperlukan</h2><p class="sub">Firebase belum dikonfigurasi. Tempel config proyek Anda ke dalam file (bagian <code>firebaseConfig</code>).</p>';
+    return;
+  }
+  firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth();db=firebase.firestore();
+  loginScreen();
+  auth.onAuthStateChanged(u=>{ if(u)onLogin(u); else loginScreen(); });
+}
+window.speak=speak;window.go=go;window.markDone=markDone;window.toggleId=toggleId;window.playDlg=playDlg;window.answer=answer;window.checkDrill=checkDrill;window.resetToefl=resetToefl;window.doLogin=doLogin;window.doLogout=doLogout;window.fillLogin=fillLogin;
+initApp();
 </script>
 </body>
 </html>
