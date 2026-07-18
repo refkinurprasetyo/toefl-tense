@@ -188,10 +188,15 @@ body.pre-auth #authgate{display:flex}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .stat .big{font-size:30px;font-weight:800;color:var(--gold)}
 .stat .lab{color:var(--muted);font-size:13px;margin-top:2px}
-.ring{--p:0;width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--teal) calc(var(--p)*1%),#0c1130 0);display:flex;align-items:center;justify-content:center;margin:0 auto}
-.ring .inner{width:92px;height:92px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .inner b{font-size:26px}
-.ring .inner span{font-size:11px;color:var(--muted)}
+.ring{--p:0;width:96px;height:96px;flex-shrink:0;border-radius:50%;background:conic-gradient(var(--teal) calc(var(--p)*1%),#0c1130 0);display:flex;align-items:center;justify-content:center}
+.ring .inner{width:72px;height:72px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .inner b{font-size:21px;line-height:1}
+.ring .inner span{font-size:10px;color:var(--muted)}
+.stat.ringcard{grid-column:span 2}
+.ringrow{display:flex;gap:16px;align-items:center}
+.ringrow .rt{min-width:0}
+.ringrow .rt .big{font-size:26px}
+@media(max-width:640px){.stat.ringcard{grid-column:auto}}
 .chartbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
 .chartbox h3{font-size:15px;margin-bottom:10px}
 .badges{display:flex;flex-wrap:wrap;gap:9px;margin:6px 0}
@@ -1360,9 +1365,9 @@ function renderAchievements(){
   <h2 class="title">🏆 Pencapaian ${PROFILE?PROFILE.name:''}</h2>
   <p class="subtitle">Pantau progres, skor kuis, dan lencana Anda. Semua tersimpan otomatis lintas perangkat.</p>
   <div class="statgrid">
-    <div class="stat"><div style="display:flex;gap:16px;align-items:center">
+    <div class="stat ringcard"><div class="ringrow">
       <div class="ring" style="--p:${s.pct}"><div class="inner"><b>${s.pct}%</b><span>selesai</span></div></div>
-      <div><div class="big">${s.completed}/${s.total}</div><div class="lab">modul selesai</div></div>
+      <div class="rt"><div class="big">${s.completed}/${s.total}</div><div class="lab">modul selesai</div></div>
     </div></div>
     <div class="stat"><div class="big" style="color:var(--gold)">${s.exDone?s.exAvg+'%':'—'}</div><div class="lab">rata-rata NILAI LATIHAN (${s.exDone}/${s.exTotal})</div></div>
     <div class="stat"><div class="big">${s.avg}%</div><div class="lab">rata-rata skor kuis (${s.quizzesDone} kuis)</div></div>
